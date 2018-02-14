@@ -1,7 +1,7 @@
 # Surepatch CLI Application
 Surepatch CLI App - is a complex solution for your projects and OS security.
 This application is designed to work with the Surepatch Project without using the web interface. You can use it both in manual and automatic mode in operating systems with a graphical interface and on server stations without a graphical interface. You can use the application as part of scripts for automatic builds to test the security of your application and the operating system packages after each change. You can constantly maintain the current state of security packages, including the application in the schedule. You can completely control your platforms, projects and component sets without using a browser, receive actual reports and solutions from periodically updated vulnerability database.
-# Features
+# CLI App Features
 - Main Features:
     - Create, delete, archive and restore Platforms
     - Create, delete, archive and restore Projects

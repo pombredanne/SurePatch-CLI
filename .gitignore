@@ -12,6 +12,7 @@ __pycache__/
 .Python
 env/
 build/
+dist/
 develop-eggs/
 downloads/
 eggs/
@@ -25,6 +26,12 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# System folders
+.DS_Store
+
+# spec file
+*.spec
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

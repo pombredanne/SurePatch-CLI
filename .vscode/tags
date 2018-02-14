@@ -12,7 +12,7 @@ AUTO	../core/api.py	/^    AUTO = 'auto'$/;"	kind:variable	line:935
 Actions	../core/api.py	/^class Actions(object):$/;"	kind:class	line:887
 AsciiTable	../core/interface.py	/^from terminaltables import AsciiTable$/;"	kind:namespace	line:7
 CENTOS	../core/api.py	/^    CENTOS = 'centos'$/;"	kind:variable	line:954
-CENTOS	../core/components_helper/components_helper.py	/^    CENTOS = 'centos'$/;"	kind:variable	line:2012
+CENTOS	../core/components_helper/components_helper.py	/^    CENTOS = 'centos'$/;"	kind:variable	line:2045
 CREATE_PLATFORM	../core/api.py	/^    CREATE_PLATFORM = 'create_platform'$/;"	kind:variable	line:892
 CREATE_PROJECT	../core/api.py	/^    CREATE_PROJECT = 'create_project'$/;"	kind:variable	line:893
 CREATE_SET	../core/api.py	/^    CREATE_SET = 'create_set'$/;"	kind:variable	line:894
@@ -22,28 +22,28 @@ ComponentsHelper	../core/project_helper/project_helper.py	/^from core.components
 ComponentsHelper	../core/set_helper/set_helper.py	/^from core.components_helper.components_helper import ComponentsHelper$/;"	kind:namespace	line:5
 ComponentsHelper	../core/show_helper/show_helper.py	/^from core.components_helper.components_helper import ComponentsHelper$/;"	kind:namespace	line:11
 DEBIAN	../core/api.py	/^    DEBIAN = 'debian'$/;"	kind:variable	line:953
-DEBIAN	../core/components_helper/components_helper.py	/^    DEBIAN = 'debian'$/;"	kind:variable	line:2011
+DEBIAN	../core/components_helper/components_helper.py	/^    DEBIAN = 'debian'$/;"	kind:variable	line:2044
 DELETE_PLATFORM	../core/api.py	/^    DELETE_PLATFORM = 'delete_platform'$/;"	kind:variable	line:899
 DELETE_PROJECT	../core/api.py	/^    DELETE_PROJECT = 'delete_project'$/;"	kind:variable	line:900
 FEDORA	../core/api.py	/^    FEDORA = 'fedora'$/;"	kind:variable	line:955
-FEDORA	../core/components_helper/components_helper.py	/^    FEDORA = 'fedora'$/;"	kind:variable	line:2013
+FEDORA	../core/components_helper/components_helper.py	/^    FEDORA = 'fedora'$/;"	kind:variable	line:2046
 Formats	../core/api.py	/^class Formats(object):$/;"	kind:class	line:939
 Formats	../surepatch.py	/^from core.api import Formats$/;"	kind:namespace	line:14
 GEM	../core/api.py	/^    GEM = 'gem'$/;"	kind:variable	line:922
 GEMFILE	../core/api.py	/^    GEMFILE = 'gemfile'$/;"	kind:variable	line:923
 GEMFILE_LOCK	../core/api.py	/^    GEMFILE_LOCK = 'gemfile_lock'$/;"	kind:variable	line:924
 MACOS	../core/api.py	/^    MACOS = 'macos'$/;"	kind:variable	line:957
-MACOS	../core/components_helper/components_helper.py	/^    MACOS = 'macos'/;"	kind:variable	line:2015
+MACOS	../core/components_helper/components_helper.py	/^    MACOS = 'macos'/;"	kind:variable	line:2048
 MANUAL	../core/api.py	/^    MANUAL = 'manual'$/;"	kind:variable	line:936
 Methods	../core/api.py	/^class Methods(object):$/;"	kind:class	line:931
 Methods	../surepatch.py	/^from core.api import Methods$/;"	kind:namespace	line:13
 NPM	../core/api.py	/^    NPM = 'npm'$/;"	kind:variable	line:918
 NPM_LOCAL	../core/api.py	/^    NPM_LOCAL = 'npm_local'$/;"	kind:variable	line:919
 OPENSUSE	../core/api.py	/^    OPENSUSE = 'opensuse'$/;"	kind:variable	line:956
-OPENSUSE	../core/components_helper/components_helper.py	/^    OPENSUSE = 'opensuse'$/;"	kind:variable	line:2014
+OPENSUSE	../core/components_helper/components_helper.py	/^    OPENSUSE = 'opensuse'$/;"	kind:variable	line:2047
 OS	../core/api.py	/^    OS = 'os'$/;"	kind:variable	line:911
 OSs	../core/api.py	/^class OSs(object):$/;"	kind:class	line:947
-OSs	../core/components_helper/components_helper.py	/^class OSs(object):$/;"	kind:class	line:2005
+OSs	../core/components_helper/components_helper.py	/^class OSs(object):$/;"	kind:class	line:2038
 OSs	../surepatch.py	/^from core.api import OSs$/;"	kind:namespace	line:12
 PACKAGE_JSON	../core/api.py	/^    PACKAGE_JSON = 'package_json'$/;"	kind:variable	line:920
 PACKAGE_LOCK_JSON	../core/api.py	/^    PACKAGE_LOCK_JSON = 'package_lock_json'$/;"	kind:variable	line:921
@@ -74,10 +74,10 @@ ShowHelper	../core/api.py	/^from core.show_helper.show_helper import ShowHelper$
 ShowHelper	../core/show_helper/show_helper.py	/^class ShowHelper(object):$/;"	kind:class	line:15
 Targets	../core/api.py	/^class Targets(object):$/;"	kind:class	line:907
 UBUNTU	../core/api.py	/^    UBUNTU = 'ubuntu'$/;"	kind:variable	line:952
-UBUNTU	../core/components_helper/components_helper.py	/^    UBUNTU = 'ubuntu'$/;"	kind:variable	line:2010
+UBUNTU	../core/components_helper/components_helper.py	/^    UBUNTU = 'ubuntu'$/;"	kind:variable	line:2043
 USER	../core/api.py	/^    USER = 'user'$/;"	kind:variable	line:944
 WINDOWS	../core/api.py	/^    WINDOWS = 'windows'$/;"	kind:variable	line:951
-WINDOWS	../core/components_helper/components_helper.py	/^    WINDOWS = 'windows'$/;"	kind:variable	line:2009
+WINDOWS	../core/components_helper/components_helper.py	/^    WINDOWS = 'windows'$/;"	kind:variable	line:2042
 WebAPI	../core/api.py	/^from core.webapi import WebAPI$/;"	kind:namespace	line:7
 WebAPI	../core/components_helper/components_helper.py	/^from core.webapi import WebAPI$/;"	kind:namespace	line:15
 WebAPI	../core/platform_helper/platform_helper.py	/^from core.webapi import WebAPI$/;"	kind:namespace	line:5
@@ -115,7 +115,7 @@ action_show_platforms	../core/show_helper/show_helper.py	/^    def action_show_p
 action_show_platforms_projects_or_sets	../core/api.py	/^    def action_show_platforms_projects_or_sets(self, api_data):$/;"	kind:member	line:601
 action_show_projects	../core/show_helper/show_helper.py	/^    def action_show_projects(self, api_data):$/;"	kind:member	line:50
 action_show_set	../core/show_helper/show_helper.py	/^    def action_show_set(self, api_data):$/;"	kind:member	line:88
-already_in_components	../core/components_helper/components_helper.py	/^        def already_in_components(components, key):$/;"	kind:function	line:1471
+already_in_components	../core/components_helper/components_helper.py	/^        def already_in_components(components, key):$/;"	kind:function	line:1504
 api	../surepatch.py	/^api = API()$/;"	kind:variable	line:18
 api.py	../core/api.py	1;"	kind:file	line:1
 archive_platform	../core/platform_helper/platform_helper.py	/^    def archive_platform(self, api_data):$/;"	kind:member	line:49
@@ -125,7 +125,7 @@ ask	../core/components_helper/components_helper.py	/^from core.interface import 
 ask	../core/interface.py	/^def ask(message):$/;"	kind:function	line:108
 base_url	../core/webapi.py	/^    base_url = "https:\/\/beta.surepatch.net"$/;"	kind:variable	line:19
 check_action_type_match	../core/api.py	/^    def check_action_type_match(api_data):$/;"	kind:member	line:761
-codecs	../core/components_helper/components_helper.py	/^                import codecs$/;"	kind:namespace	line:1957
+codecs	../core/components_helper/components_helper.py	/^                import codecs$/;"	kind:namespace	line:1990
 collect_data_for_data_for_project_pip_auto_system_path	../core/project_helper/project_helper.py	/^    def collect_data_for_data_for_project_pip_auto_system_path(self, api_data):$/;"	kind:member	line:99
 collect_data_for_project_any_auto_user_path	../core/project_helper/project_helper.py	/^    def collect_data_for_project_any_auto_user_path(self, api_data):$/;"	kind:member	line:297
 collect_data_for_project_any_manual_user_none	../core/project_helper/project_helper.py	/^    def collect_data_for_project_any_manual_user_none(self, api_data):$/;"	kind:member	line:315
@@ -177,7 +177,7 @@ create_platform_validate	../core/platform_helper/platform_helper.py	/^    def cr
 create_project_validate	../core/project_helper/project_helper.py	/^    def create_project_validate(self, api_data):$/;"	kind:member	line:15
 create_set_validate	../core/set_helper/set_helper.py	/^    def create_set_validate(self, api_data):$/;"	kind:member	line:15
 datetime	../core/webapi.py	/^import datetime$/;"	kind:namespace	line:5
-define_file_encoding	../core/components_helper/components_helper.py	/^    def define_file_encoding(filename):$/;"	kind:member	line:1947
+define_file_encoding	../core/components_helper/components_helper.py	/^    def define_file_encoding(filename):$/;"	kind:member	line:1980
 delete_platform	../core/platform_helper/platform_helper.py	/^    def delete_platform(self, api_data):$/;"	kind:member	line:35
 delete_project	../core/project_helper/project_helper.py	/^    def delete_project(self, api_data):$/;"	kind:member	line:400
 denied_if_unpaid	../core/webapi.py	/^        denied_if_unpaid=True,$/;"	kind:variable	line:42
@@ -202,8 +202,8 @@ get_components_pip_auto_system_none	../core/components_helper/components_helper.
 get_components_pip_auto_system_path	../core/components_helper/components_helper.py	/^    def get_components_pip_auto_system_path(self, api_data):$/;"	kind:member	line:180
 get_components_requirements_auto_system_path	../core/components_helper/components_helper.py	/^    def get_components_requirements_auto_system_path(self, api_data):$/;"	kind:member	line:195
 get_components_yarn_lock	../core/components_helper/components_helper.py	/^    def get_components_yarn_lock(self, api_data):$/;"	kind:member	line:443
-get_current_component_set	../core/components_helper/components_helper.py	/^    def get_current_component_set(self, api_data):$/;"	kind:member	line:1985
-get_current_set_name	../core/components_helper/components_helper.py	/^    def get_current_set_name(self, api_data):$/;"	kind:member	line:1966
+get_current_component_set	../core/components_helper/components_helper.py	/^    def get_current_component_set(self, api_data):$/;"	kind:member	line:2018
+get_current_set_name	../core/components_helper/components_helper.py	/^    def get_current_set_name(self, api_data):$/;"	kind:member	line:1999
 get_my_platforms	../core/project_helper/project_helper.py	/^    def get_my_platforms(api_data):$/;"	kind:member	line:491
 get_my_platforms	../core/set_helper/set_helper.py	/^    def get_my_platforms(api_data):$/;"	kind:member	line:653
 get_my_projects	../core/project_helper/project_helper.py	/^    def get_my_projects(self, api_data):$/;"	kind:member	line:510
@@ -214,9 +214,9 @@ get_os_platform	../surepatch.py	/^def get_os_platform():$/;"	kind:function	line:
 get_os_release	../surepatch.py	/^def get_os_release() :$/;"	kind:function	line:165
 get_os_sp	../surepatch.py	/^def get_os_sp(os_platform):$/;"	kind:function	line:153
 get_os_version	../surepatch.py	/^def get_os_version(os_platform):$/;"	kind:function	line:142
-get_platform_id_by_name	../core/webapi.py	/^    def get_platform_id_by_name(api_data):$/;"	kind:member	line:662
-get_platform_number_by_name	../core/webapi.py	/^    def get_platform_number_by_name(api_data):$/;"	kind:member	line:676
-get_project_number_by_name	../core/webapi.py	/^    def get_project_number_by_name(self, api_data):$/;"	kind:member	line:690
+get_platform_id_by_name	../core/webapi.py	/^    def get_platform_id_by_name(api_data):$/;"	kind:member	line:676
+get_platform_number_by_name	../core/webapi.py	/^    def get_platform_number_by_name(api_data):$/;"	kind:member	line:690
+get_project_number_by_name	../core/webapi.py	/^    def get_project_number_by_name(self, api_data):$/;"	kind:member	line:704
 headers	../core/webapi.py	/^    headers = {$/;"	kind:variable	line:15
 importlib	../core/components_helper/components_helper.py	/^import importlib$/;"	kind:namespace	line:10
 interface.py	../core/interface.py	1;"	kind:file	line:1
@@ -225,24 +225,24 @@ issues_url	../core/webapi.py	/^    issues_url = base_url + "\/api\/projects\/par
 json	../core/components_helper/components_helper.py	/^import json$/;"	kind:namespace	line:7
 json	../core/webapi.py	/^import json$/;"	kind:namespace	line:3
 load_config_from_file	../core/api.py	/^    def load_config_from_file(self, api_data):$/;"	kind:member	line:825
-load_fedora_packages_from_path	../core/components_helper/components_helper.py	/^    def load_fedora_packages_from_path(self, api_data):$/;"	kind:member	line:732
-load_fedora_packages_from_shell	../core/components_helper/components_helper.py	/^    def load_fedora_packages_from_shell(self, api_data):$/;"	kind:member	line:711
-load_gem_packages_from_path	../core/components_helper/components_helper.py	/^    def load_gem_packages_from_path(self, api_data):$/;"	kind:member	line:1027
-load_gem_packages_system	../core/components_helper/components_helper.py	/^    def load_gem_packages_system(self, api_data, local):$/;"	kind:member	line:1058
-load_gemfile_lock_packages_from_path	../core/components_helper/components_helper.py	/^    def load_gemfile_lock_packages_from_path(self, api_data):$/;"	kind:member	line:1156
-load_gemfile_packages_from_path	../core/components_helper/components_helper.py	/^    def load_gemfile_packages_from_path(self, api_data):$/;"	kind:member	line:1125
-load_macos_packages_from_path	../core/components_helper/components_helper.py	/^    def load_macos_packages_from_path(self, api_data):$/;"	kind:member	line:800
-load_macos_packages_from_shell	../core/components_helper/components_helper.py	/^    def load_macos_packages_from_shell(self, api_data):$/;"	kind:member	line:767
+load_fedora_packages_from_path	../core/components_helper/components_helper.py	/^    def load_fedora_packages_from_path(self, api_data):$/;"	kind:member	line:734
+load_fedora_packages_from_shell	../core/components_helper/components_helper.py	/^    def load_fedora_packages_from_shell(self, api_data):$/;"	kind:member	line:713
+load_gem_packages_from_path	../core/components_helper/components_helper.py	/^    def load_gem_packages_from_path(self, api_data):$/;"	kind:member	line:1029
+load_gem_packages_system	../core/components_helper/components_helper.py	/^    def load_gem_packages_system(self, api_data, local):$/;"	kind:member	line:1060
+load_gemfile_lock_packages_from_path	../core/components_helper/components_helper.py	/^    def load_gemfile_lock_packages_from_path(self, api_data):$/;"	kind:member	line:1158
+load_gemfile_packages_from_path	../core/components_helper/components_helper.py	/^    def load_gemfile_packages_from_path(self, api_data):$/;"	kind:member	line:1127
+load_macos_packages_from_path	../core/components_helper/components_helper.py	/^    def load_macos_packages_from_path(self, api_data):$/;"	kind:member	line:802
+load_macos_packages_from_shell	../core/components_helper/components_helper.py	/^    def load_macos_packages_from_shell(self, api_data):$/;"	kind:member	line:769
 load_maven_pom_components_path	../core/components_helper/components_helper.py	/^    def load_maven_pom_components_path(self, api_data):$/;"	kind:member	line:461
-load_npm_lock_packages_from_path	../core/components_helper/components_helper.py	/^    def load_npm_lock_packages_from_path(self, api_data):$/;"	kind:member	line:992
-load_npm_packages	../core/components_helper/components_helper.py	/^    def load_npm_packages(self, api_data, local):$/;"	kind:member	line:927
-load_npm_packages_from_path	../core/components_helper/components_helper.py	/^    def load_npm_packages_from_path(self, api_data):$/;"	kind:member	line:896
-load_package_json_packages_from_path	../core/components_helper/components_helper.py	/^    def load_package_json_packages_from_path(self, api_data):$/;"	kind:member	line:963
-load_php_composer_json_system_path	../core/components_helper/components_helper.py	/^    def load_php_composer_json_system_path(self, api_data):$/;"	kind:member	line:1187
-load_php_composer_lock_system_path	../core/components_helper/components_helper.py	/^    def load_php_composer_lock_system_path(self, api_data):$/;"	kind:member	line:1217
-load_pip_packages_from_path	../core/components_helper/components_helper.py	/^    def load_pip_packages_from_path(self, api_data):$/;"	kind:member	line:865
-load_pip_packages_from_shell_legacy	../core/components_helper/components_helper.py	/^    def load_pip_packages_from_shell_legacy(self, api_data):$/;"	kind:member	line:835
-load_ubuntu_packages_from_path	../core/components_helper/components_helper.py	/^    def load_ubuntu_packages_from_path(self, api_data):$/;"	kind:member	line:675
+load_npm_lock_packages_from_path	../core/components_helper/components_helper.py	/^    def load_npm_lock_packages_from_path(self, api_data):$/;"	kind:member	line:994
+load_npm_packages	../core/components_helper/components_helper.py	/^    def load_npm_packages(self, api_data, local):$/;"	kind:member	line:929
+load_npm_packages_from_path	../core/components_helper/components_helper.py	/^    def load_npm_packages_from_path(self, api_data):$/;"	kind:member	line:898
+load_package_json_packages_from_path	../core/components_helper/components_helper.py	/^    def load_package_json_packages_from_path(self, api_data):$/;"	kind:member	line:965
+load_php_composer_json_system_path	../core/components_helper/components_helper.py	/^    def load_php_composer_json_system_path(self, api_data):$/;"	kind:member	line:1189
+load_php_composer_lock_system_path	../core/components_helper/components_helper.py	/^    def load_php_composer_lock_system_path(self, api_data):$/;"	kind:member	line:1219
+load_pip_packages_from_path	../core/components_helper/components_helper.py	/^    def load_pip_packages_from_path(self, api_data):$/;"	kind:member	line:867
+load_pip_packages_from_shell_legacy	../core/components_helper/components_helper.py	/^    def load_pip_packages_from_shell_legacy(self, api_data):$/;"	kind:member	line:837
+load_ubuntu_packages_from_path	../core/components_helper/components_helper.py	/^    def load_ubuntu_packages_from_path(self, api_data):$/;"	kind:member	line:677
 load_ubuntu_packages_from_shell	../core/components_helper/components_helper.py	/^    def load_ubuntu_packages_from_shell(self, api_data):$/;"	kind:member	line:638
 load_windows_10_packages_from_path	../core/components_helper/components_helper.py	/^    def load_windows_10_packages_from_path(self, api_data):$/;"	kind:member	line:602
 load_windows_10_packages_from_shell	../core/components_helper/components_helper.py	/^    def load_windows_10_packages_from_shell(self, api_data):$/;"	kind:member	line:571
@@ -265,21 +265,21 @@ os	../core/api.py	/^import os$/;"	kind:namespace	line:3
 os	../core/components_helper/components_helper.py	/^import os$/;"	kind:namespace	line:5
 os	../setup.py	/^import os$/;"	kind:namespace	line:1
 parent	../core/webapi.py	/^        parent=None,$/;"	kind:variable	line:37
-parse_fedora_packages	../core/components_helper/components_helper.py	/^    def parse_fedora_packages(api_data):$/;"	kind:member	line:1320
-parse_gem_packages_from_path	../core/components_helper/components_helper.py	/^    def parse_gem_packages_from_path(api_data):$/;"	kind:member	line:1541
-parse_gem_packages_system	../core/components_helper/components_helper.py	/^    def parse_gem_packages_system(self, api_data):$/;"	kind:member	line:1531
-parse_gemfile_lock_packages	../core/components_helper/components_helper.py	/^    def parse_gemfile_lock_packages(api_data):$/;"	kind:member	line:1656
-parse_gemfile_packages	../core/components_helper/components_helper.py	/^    def parse_gemfile_packages( api_data):$/;"	kind:member	line:1563
-parse_macos_packages	../core/components_helper/components_helper.py	/^    def parse_macos_packages(api_data):$/;"	kind:member	line:1342
-parse_npm_lock_packages	../core/components_helper/components_helper.py	/^    def parse_npm_lock_packages(api_data):$/;"	kind:member	line:1464
-parse_npm_packages	../core/components_helper/components_helper.py	/^    def parse_npm_packages(api_data):$/;"	kind:member	line:1427
-parse_package_json_packages_from_path	../core/components_helper/components_helper.py	/^    def parse_package_json_packages_from_path(api_data):$/;"	kind:member	line:1505
-parse_php_composer_json_system_path	../core/components_helper/components_helper.py	/^    def parse_php_composer_json_system_path(api_data):$/;"	kind:member	line:1742
-parse_php_composer_lock_system_path	../core/components_helper/components_helper.py	/^    def parse_php_composer_lock_system_path(api_data):$/;"	kind:member	line:1827
-parse_pip_packages_from_path	../core/components_helper/components_helper.py	/^    def parse_pip_packages_from_path(api_data):$/;"	kind:member	line:1389
-parse_pip_packages_legacy	../core/components_helper/components_helper.py	/^    def parse_pip_packages_legacy(api_data):$/;"	kind:member	line:1363
-parse_ubuntu_packages	../core/components_helper/components_helper.py	/^    def parse_ubuntu_packages(api_data):$/;"	kind:member	line:1287
-parse_windows_10_packages	../core/components_helper/components_helper.py	/^    def parse_windows_10_packages(api_data):$/;"	kind:member	line:1252
+parse_fedora_packages	../core/components_helper/components_helper.py	/^    def parse_fedora_packages(api_data):$/;"	kind:member	line:1322
+parse_gem_packages_from_path	../core/components_helper/components_helper.py	/^    def parse_gem_packages_from_path(api_data):$/;"	kind:member	line:1574
+parse_gem_packages_system	../core/components_helper/components_helper.py	/^    def parse_gem_packages_system(self, api_data):$/;"	kind:member	line:1564
+parse_gemfile_lock_packages	../core/components_helper/components_helper.py	/^    def parse_gemfile_lock_packages(api_data):$/;"	kind:member	line:1689
+parse_gemfile_packages	../core/components_helper/components_helper.py	/^    def parse_gemfile_packages( api_data):$/;"	kind:member	line:1596
+parse_macos_packages	../core/components_helper/components_helper.py	/^    def parse_macos_packages(api_data):$/;"	kind:member	line:1344
+parse_npm_lock_packages	../core/components_helper/components_helper.py	/^    def parse_npm_lock_packages(api_data):$/;"	kind:member	line:1497
+parse_npm_packages	../core/components_helper/components_helper.py	/^    def parse_npm_packages(api_data):$/;"	kind:member	line:1460
+parse_package_json_packages_from_path	../core/components_helper/components_helper.py	/^    def parse_package_json_packages_from_path(api_data):$/;"	kind:member	line:1538
+parse_php_composer_json_system_path	../core/components_helper/components_helper.py	/^    def parse_php_composer_json_system_path(api_data):$/;"	kind:member	line:1775
+parse_php_composer_lock_system_path	../core/components_helper/components_helper.py	/^    def parse_php_composer_lock_system_path(api_data):$/;"	kind:member	line:1860
+parse_pip_packages_from_path	../core/components_helper/components_helper.py	/^    def parse_pip_packages_from_path(api_data):$/;"	kind:member	line:1422
+parse_pip_packages_legacy	../core/components_helper/components_helper.py	/^    def parse_pip_packages_legacy(api_data):$/;"	kind:member	line:1396
+parse_ubuntu_packages	../core/components_helper/components_helper.py	/^    def parse_ubuntu_packages(api_data):$/;"	kind:member	line:1289
+parse_windows_10_packages	../core/components_helper/components_helper.py	/^    def parse_windows_10_packages(api_data):$/;"	kind:member	line:1254
 password	../core/webapi.py	/^        password=None,$/;"	kind:variable	line:29
 platform	../core/components_helper/components_helper.py	/^import platform$/;"	kind:namespace	line:9
 platform	../surepatch.py	/^import platform$/;"	kind:namespace	line:8
@@ -325,21 +325,21 @@ restore_project	../core/project_helper/project_helper.py	/^    def restore_proje
 run_action	../core/api.py	/^    def run_action(self, api_data):$/;"	kind:member	line:26
 save_config_to_file	../core/api.py	/^    def save_config_to_file(api_data):$/;"	kind:member	line:794
 select_login_method	../core/api.py	/^    def select_login_method(self, api_data):$/;"	kind:member	line:88
-send_archive_platform_request	../core/webapi.py	/^    def send_archive_platform_request(self, api_data):$/;"	kind:member	line:385
-send_archive_project_request	../core/webapi.py	/^    def send_archive_project_request(self, api_data):$/;"	kind:member	line:427
-send_create_new_component_set_request	../core/webapi.py	/^    def send_create_new_component_set_request(self, api_data):$/;"	kind:member	line:292
-send_create_new_platform_request	../core/webapi.py	/^    def send_create_new_platform_request(self, api_data):$/;"	kind:member	line:227
-send_create_new_project_request	../core/webapi.py	/^    def send_create_new_project_request(self, api_data):$/;"	kind:member	line:259
-send_delete_platform_request	../core/webapi.py	/^    def send_delete_platform_request(self, api_data):$/;"	kind:member	line:325
-send_delete_project_request	../core/webapi.py	/^    def send_delete_project_request(self, api_data):$/;"	kind:member	line:355
-send_get_archived_platforms_request	../core/webapi.py	/^    def send_get_archived_platforms_request(self, api_data):$/;"	kind:member	line:550
-send_get_archived_projects_request	../core/webapi.py	/^    def send_get_archived_projects_request(self, api_data):$/;"	kind:member	line:587
-send_get_issues_request	../core/webapi.py	/^    def send_get_issues_request(self, api_data):$/;"	kind:member	line:624
-send_get_organization_parameters_request	../core/webapi.py	/^    def send_get_organization_parameters_request(self, api_data):$/;"	kind:member	line:140
+send_archive_platform_request	../core/webapi.py	/^    def send_archive_platform_request(self, api_data):$/;"	kind:member	line:399
+send_archive_project_request	../core/webapi.py	/^    def send_archive_project_request(self, api_data):$/;"	kind:member	line:441
+send_create_new_component_set_request	../core/webapi.py	/^    def send_create_new_component_set_request(self, api_data):$/;"	kind:member	line:306
+send_create_new_platform_request	../core/webapi.py	/^    def send_create_new_platform_request(self, api_data):$/;"	kind:member	line:241
+send_create_new_project_request	../core/webapi.py	/^    def send_create_new_project_request(self, api_data):$/;"	kind:member	line:273
+send_delete_platform_request	../core/webapi.py	/^    def send_delete_platform_request(self, api_data):$/;"	kind:member	line:339
+send_delete_project_request	../core/webapi.py	/^    def send_delete_project_request(self, api_data):$/;"	kind:member	line:369
+send_get_archived_platforms_request	../core/webapi.py	/^    def send_get_archived_platforms_request(self, api_data):$/;"	kind:member	line:564
+send_get_archived_projects_request	../core/webapi.py	/^    def send_get_archived_projects_request(self, api_data):$/;"	kind:member	line:601
+send_get_issues_request	../core/webapi.py	/^    def send_get_issues_request(self, api_data):$/;"	kind:member	line:638
+send_get_organization_parameters_request	../core/webapi.py	/^    def send_get_organization_parameters_request(self, api_data):$/;"	kind:member	line:154
 send_login_token_request	../core/webapi.py	/^    def send_login_token_request(self, api_data):$/;"	kind:member	line:53
 send_login_user_password_request	../core/webapi.py	/^    def send_login_user_password_request(self, api_data):$/;"	kind:member	line:95
-send_restore_platform_request	../core/webapi.py	/^    def send_restore_platform_request(self, api_data):$/;"	kind:member	line:468
-send_restore_project_request	../core/webapi.py	/^    def send_restore_project_request(self, api_data):$/;"	kind:member	line:509
+send_restore_platform_request	../core/webapi.py	/^    def send_restore_platform_request(self, api_data):$/;"	kind:member	line:482
+send_restore_project_request	../core/webapi.py	/^    def send_restore_project_request(self, api_data):$/;"	kind:member	line:523
 set_helper.py	../core/set_helper/set_helper.py	1;"	kind:file	line:1
 set_name	../core/webapi.py	/^        set_name='0.0.0',$/;"	kind:variable	line:46
 setup	../setup.py	/^from setuptools import setup$/;"	kind:namespace	line:2

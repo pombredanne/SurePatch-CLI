@@ -254,8 +254,12 @@ def main():
     api_data['components'] = []
 
     if api.run_action(api_data=api_data):
-        print_line('Complete successfully with targets {0}'.format(targets))
-        print_line('Process {0} components'.format(len(api_data['components'])))
+        if len(targets) == 0:
+            print_line('Complete successfully.')
+        else:
+            print_line('Complete successfully with targets {0}.'.format(targets))
+        if len(api_data['components']) != 0:
+            print_line('Process {0} components.'.format(len(api_data['components'])))
     else:
         print_line('Complete with errors with targets {0}'.format(targets))
     return 0

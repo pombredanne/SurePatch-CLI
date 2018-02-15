@@ -15,11 +15,14 @@ class WebAPI(object):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) \
         Gecko/20100101 Firefox/45.0',
-        'token': ''}
-    base_url = "https://surepatch.com"
-    # base_url = "https://beta.surepatch.net"
-    api_url = '/api'
+        'token': ''
+    }
+    # -> for PROD
+    # base_url = "https://surepatch.com"
     # api_url = ''
+    # -> for TEST
+    base_url = "https://beta.surepatch.net"
+    api_url = '/api'
     login_url = base_url + api_url + "/auth/login"
     login_token_url = base_url + api_url + "/auth/token/login"
     organization_url = base_url + api_url + "/organization"

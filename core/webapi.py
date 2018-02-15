@@ -17,13 +17,16 @@ class WebAPI(object):
         Gecko/20100101 Firefox/45.0',
         'token': ''}
     base_url = "https://surepatch.com"
-    login_url = base_url + "/api/auth/login"
-    login_token_url = base_url + "/api/auth/token/login"
-    organization_url = base_url + "/api/organization"
-    platform_url = base_url + "/api/platforms"
-    project_url = base_url + "/api/projects"
-    issues_url = base_url + "/api/projects/partial"
-    components_url = base_url + "/api/components"
+    # base_url = "https://beta.surepatch.net"
+    api_url = '/api'
+    # api_url = ''
+    login_url = base_url + api_url + "/auth/login"
+    login_token_url = base_url + api_url + "/auth/token/login"
+    organization_url = base_url + api_url + "/organization"
+    platform_url = base_url + api_url + "/platforms"
+    project_url = base_url + api_url + "/projects"
+    issues_url = base_url + api_url + "/projects/partial"
+    components_url = base_url + api_url + "/components"
     login_payload = dict(
         username=None,
         password=None,

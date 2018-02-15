@@ -262,7 +262,7 @@ def main():
             print_line('Complete successfully.')
         else:
             print_line('Complete successfully with targets {0}.'.format(targets))
-        if len(api_data['components']) != 0:
+        if api_data['components'] != []:
             print_line('Process {0} components.'.format(len(api_data['components'])))
     else:
         if targets == ['']:

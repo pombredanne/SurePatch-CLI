@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+"""Module for server access via web requests
+"""
 
 import json
-import requests
 import datetime
+import requests
 
 from core.interface import print_line
 
@@ -125,8 +127,10 @@ class WebAPI(object):
                         api_data['token'] = None
                         print_line('It seems that you have enabled two-factor authentication.')
                         print_line('CLI App does not support login/password with enabled MFA.')
-                        print_line('To obtain auth token, please visit surepatch.com, login, go to Profile page.')
-                        print_line('For successfull login in this case, use auth token in parameters or config file.')
+                        print_line('To obtain auth token, please visit surepatch.com, '
+                                   'login, go to Profile page.')
+                        print_line('For successfull login in this case, use auth token '
+                                   'in parameters or config file.')
                         return False
                     if 'userID' in login_response_text:
                         api_data['user_id'] = login_response_text['userID']

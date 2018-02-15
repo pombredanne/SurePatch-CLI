@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+"""Main surepatch module
+"""
 
 # inputs
 
@@ -15,7 +16,7 @@ from core.api import Formats
 from core.interface import print_line
 from core.interface import print_logo
 
-api = API()
+application_api = API()
 
 
 def create_parser():
@@ -51,7 +52,8 @@ def create_parser():
         '--target',
         type=str,
         required=False,
-        help="Define SurePatch target (os/pip/requirements/npm/packages_json/gem/gemlist/gemfile...)")
+        help="Define SurePatch target (os/pip/requirements/npm/"
+             "packages_json/gem/gemlist/gemfile...)")
 
     parser.add_argument(
         '--method',
@@ -162,7 +164,7 @@ def get_os_sp(os_platform):
     return ''
 
 
-def get_os_release() :
+def get_os_release():
     """
     Get OS release.
     :return: release
@@ -242,8 +244,10 @@ def main():
     api_data['target'] = targets
     files = api_data['file'].replace('[', '').replace(']', '').replace(' ', '').split(',')
     if len(targets) != len(files):
-        print_line('Number of targets not equals number of files. For targets, that do not require files - use "no".')
-        print_line('For example: ... --target[os,req] --file=no,/home/user/project/requirements.txt.')
+        print_line('Number of targets not equals number of files. For targets, '
+                   'that do not require files - use "no".')
+        print_line('For example: ... --target[os,req] '
+                   '--file=no,/home/user/project/requirements.txt.')
         return 1
     api_data['file'] = []
     for file in files:
@@ -253,7 +257,7 @@ def main():
             api_data['file'].append(file)
     api_data['components'] = []
 
-    if api.run_action(api_data=api_data):
+    if application_api.run_action(api_data=api_data):
         if len(targets) == 0:
             print_line('Complete successfully.')
         else:
@@ -261,7 +265,10 @@ def main():
         if len(api_data['components']) != 0:
             print_line('Process {0} components.'.format(len(api_data['components'])))
     else:
-        print_line('Complete with errors with targets {0}'.format(targets))
+        if len(targets) == 0:
+            print_line('Complete with errors.')
+        else:
+            print_line('Complete with errors with targets {0}'.format(targets))
     return 0
 
 

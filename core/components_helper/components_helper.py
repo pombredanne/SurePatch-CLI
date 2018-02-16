@@ -51,15 +51,12 @@ class ComponentsHelper(object):
             if api_data['os_version'] == '10' or api_data['os_version'] == '8':
                 if self.load_windows_10_packages_from_shell(api_data=api_data):
                     try:
-                        print(len(api_data['packages']))
-                        print(type(api_data['packages']))
                         api_data['packages'] = api_data['packages'].decode('utf-8').replace('\r', '').split('\n')[9:]
                     except UnicodeDecodeError as decode_error:
                         try:
                             api_data['packages'] = api_data['packages'].replace('\r', '').split('\n')[9:]
                         except TypeError as type_error:
                             api_data['packages'] = api_data['packages'].decode("utf-8", "backslashreplace").replace('\r', '').split('\n')[9:]
-                            print(len(api_data['packages']))
                     if self.parse_windows_10_packages(api_data=api_data):
                         print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
                         return True

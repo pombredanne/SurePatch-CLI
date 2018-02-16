@@ -20,11 +20,10 @@ class WebAPI(object):
         'token': ''
     }
     # -> for PROD
-    # base_url = "https://surepatch.com"
-    # api_url = ''
-    # -> for TEST
-    base_url = "https://beta.surepatch.net"
+    base_url = "https://surepatch.com"
     api_url = '/api'
+    # -> for TEST
+    # base_url = "https://beta.surepatch.net"
     login_url = base_url + api_url + "/auth/login"
     login_token_url = base_url + api_url + "/auth/token/login"
     organization_url = base_url + api_url + "/organization"

@@ -28,8 +28,8 @@ C:\Python36\python.exe surepatch.py --platform=wintest --action=create_project -
 echo "8. create project NPM auto system none"
 C:\Python36\python.exe surepatch.py --platform=wintest --action=create_project --project=npm_none --target=npm
 
-echo "9. create project NPM local auto system from path --file=c:\workspace\node"
-C:\Python36\python.exe surepatch.py --platform=wintest --action=create_project --project=npm_local_none --target=npm_local --file=c:\workspace\node
+echo "9. create project NPM local auto system from path --file=c:\workspace/node"
+C:\Python36\python.exe surepatch.py --platform=wintest --action=create_project --project=npm_local_none --target=npm_local --file=c:\workspace/node
 
 echo "10. create project NPM auto system from path package.json"
 C:\Python36\python.exe surepatch.py --platform=wintest --action=create_project --project=npm_package_json --target=package_json --file=c:\package.json
@@ -94,8 +94,8 @@ C:\Python36\python.exe surepatch.py --platform=wintest --action=create_set --pro
 echo "28. create project NPM auto system none"
 C:\Python36\python.exe surepatch.py --platform=wintest --action=create_set --project=settest --target=npm
 
-echo "29. create project NPM local auto system from path --file=c:\workspace\node"
-C:\Python36\python.exe surepatch.py --platform=wintest --action=create_set --project=settest --target=npm_local --file=c:\workspace\node
+echo "29. create project NPM local auto system from path --file=c:\workspace/node"
+C:\Python36\python.exe surepatch.py --platform=wintest --action=create_set --project=settest --target=npm_local --file=c:\workspace/node
 
 echo "30. create project NPM auto system from path package.json"
 C:\Python36\python.exe surepatch.py --platform=wintest --action=create_set --project=settest --target=package_json --file=c:\package.json

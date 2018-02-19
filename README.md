@@ -46,6 +46,8 @@ This application is designed to work with the Surepatch Project without using th
 [Package](http://surepatch.com)
 
 # Build
+
+## Build manually as executable for your OS 
 You can build your own executable "surepatch" file with pyinstaller. This module already included into project requirements.txt file,
 so, you should install python3, download source code and execute "build" script from build_scripts folder or use the next command from project folder:
 ```sh
@@ -56,6 +58,13 @@ and than
 @ pyinstaller --onefile surepatch.py
 ```
 The executable file will be in /dist folder.
+## Build with script
+You can build your own executable "surepatch" file with script, named like build_<os> from folder build_scripts. 
+```sh
+@ cd build_scripts
+@ sh ./build_mac.sh
+```
+There are three example scripts for MacOS, Windows and Ubuntu, but you can change it for special platforms. At the end of the script you will get the executable in the directory /dist.
 
 # CLI App arguments
 
@@ -128,9 +137,9 @@ The executable file will be in /dist folder.
 ### Create local config file
 A local configuration file will be created in home directory (~/.surepatch.yaml).
 After that, the authorization information will be read from this file each time the action is started.
-You can change directly in file or with the help of save_config command. 
+You can change directly in file or with the help of save_config command.
 ```sh
-@ surepatch.py --action=save_config --team=testers --user=user@gmail.com --password=test_password --logo=off
+@ surepatch.py --action=save_config --team=testers --user=<your_user_email> --password=<your_password> --logo=off
 ```
 # Login variants
 Note, that login operation call before every CLI App run to make your server information in actial state, so authirization parameters should be define in command line interface in CLI App or in config file.
@@ -139,12 +148,12 @@ This variant usefull for quick authirization with auth token from surepatch serv
 Note, that you should point your irganization with --team parameter.
 For example we want look through our issues:
 ```sh
-@ surepatch  --action=show_issues --platform=wintest --project=my_platform --auth_token=3a4953e5sdf1235df598b34e434fd0754e3 --team=my_team
+@ surepatch  --action=show_issues --platform=wintest --project=my_platform --auth_token=3a4953e5sdf1235df598b34e434fd0754e3 --team=<your_team>
 ```
 ### 2. With auth token from CLI App config file
 This variand has second priority and usefull for more than one account. In this case, token will be take from config file, and no matter what is specified in the interface.
 ```sh
-@ surepatch  --action=save_config --auth_token=3a4953e5sdf1235df598b34e434fd0754e3 --team=my_team
+@ surepatch  --action=save_config --auth_token=3a4953e5sdf1235df598b34e434fd0754e3 --team=<your_team>
 ```
 ### 3. With username/password from CLI App parameters
 For example there are two accounts, and the first organization "org1" login parameters store in config file, but you want look through projects from "org2" account. So, actual login parameters will be take from console parameters, not from config file.
@@ -152,18 +161,18 @@ For example there are two accounts, and the first organization "org1" login para
 For account # 1:
 
 ```sh
-@ surepatch --action=save_config --team=org1 --user=user1@gmail.com --password=test_password --logo=off
+@ surepatch --action=save_config --team=<your_team_1> --user=<your_user_email_1> --password=<your_password_1> --logo=off
 ```
 
 And for account # 2:
 
 ```sh
-@ surepatch --action=show_projects --platform=platform2 --team=org2 --user=user2@gmail.com --password=test_password_2
+@ surepatch --action=show_projects --platform=platform2 --team=<your_team_2> --user=<your_user_email_2> --password=<your_password_1>
 ```
 ### 4. With username/password from CLI App config file
 This is simple way to use CLI App - you save config file with team, username and password and than use those parameters without token automatically.
 ```sh
-@ surepatch --action=save_config --team=org1 --user=user1@gmail.com --password=test_password --logo=off
+@ surepatch --action=save_config --team=<your_team> --user=<your_user_email> --password=<your_password> --logo=off
 ```
 
 And than:
@@ -173,13 +182,13 @@ And than:
 ```
 
 # Important notes:
-- If you do not explicitly specify the parameters, they will be set to the default values: 
+- If you do not explicitly specify the parameters, they will be set to the default values:
 
   --format=system and --method=auto, so you can use short command line notations.
-- You can use group definitions for targets and files to call one operation for different targets. 
+- You can use group definitions for targets and files to call one operation for different targets.
 
   For example:
-  
+
   This command will create project for OS, PIP, POM, GEM and Gemfile packages
 ```sh
 @ surepatch --action=create_project --platform=newtest --project=multitest2 --target=[os,pip,pom,gem,gemfile] --file=[no,no,/home/user/pom2.xml,no,/home/user/Gemfile]
@@ -191,7 +200,7 @@ And this command will create set for YARN, PIP3 and Gemfile.lock
 ```
 
 - With actions like show platforms, show projects, show cset and show issues you can use --file=<path> parameter to save the results into defined file.
-    
+
 For example:
 ```sh
 @ surepatch --action=show_issues --platform=newtest --project=settest --file=/home/user/issues_report.txt
@@ -204,7 +213,7 @@ For example:
 # Operations with Platforms
 ### Create your first Platform
 Note, thad Platform description should be wrote like "My Description".
-If --description is empty, Platform will be named as "default platform".
+If parameter --description is empty, Platform will be described as "default platform".
 ```sh
 @ surepatch --action=create_platform --platform=newtest --description="New Platform for Autotest"
 ```
@@ -246,7 +255,7 @@ If you want use pip3 packages - you should define pip3 target, like this:
 @ surepatch --action=create_project --platform=newtest --project=autotest_pip3_none --target=pip3 --method=auto --format=system
 ```
 ### Create Project from Python PIP Packages, pre-unloaded to an external file from shell command (pip freeze > file_path), for example /home/user/pip_freeze_packages.txt
-In this way, you can check security of your Python freeze files. Please, use command 
+In this way, you can check security of your Python freeze files. Please, use command
 ```sh
 @ pip freeze > file_path
 ```
@@ -347,7 +356,7 @@ Note, that CLI App use yarn.lock system format for those data.
 @ surepatch --action=create_project --platform=autotest2 --project=autotest_yarn --target=yarn --method=auto --format=system --file=/home/user/yarn.lock
 ```
 ### Create Project from User defined source file, for example /home/user/user_packages.txt, where packages defined as lines in <name>=<version> format
-Now, you can create some file and fill it with different packages and versions. 
+Now, you can create some file and fill it with different packages and versions.
 The type of package and its ownership does not matter.
 Note, that one package fill one line of file like this:
 name1=version1
@@ -449,7 +458,7 @@ And for pip3 packages:
 ```sh
 @ surepatch --action=create_set --platform=newtest --project=autotest_set_test --set=gem_gemfile_path.1 --target=gemfile --method=auto --format=system --file=/user/home/Gemfile
 ```
-### Create set from Ruby packages, collected from Gemfile.lock file, for example /home/user/Gemfile.lock 
+### Create set from Ruby packages, collected from Gemfile.lock file, for example /home/user/Gemfile.lock
 ```sh
 @ surepatch --action=create_set --platform=newtest --project=autotest_set_test --set=gem_gemfile_lock_path.1 --target=gemfile_lock --method=auto --format=system --file=/home/user/Gemfile.lock
 ```
@@ -482,7 +491,7 @@ And for pip3 packages:
 ```sh
 @ surepatch --action=show_platforms
 ```
-or 
+or
 ```sh
 @ surepatch --action=show_platforms --file=/home/user/platforms_report.txt
 ```
@@ -527,85 +536,211 @@ Fix vulnerabilities and than check changes like this
 @ surepatch --platform=newtest --action=create_set --project=pyproject --target=[os,pip,req] --file=[no,no,/home/user/workspace/pythonproject/requirements.txt]
 ```
 ### Use CLI App with docker
+Complete with standart ubuntu docker image from docker hub.
 #### Example 1.
 Doing action via ./surepatch command
-1. Choose or create directory where will placed surepatch project
-2. Download surepatch into directory (from point 1) from github:
+1. Make sure that Docker is running
+2. Choose or create directory where will placed SurePatch project
+3. Go to the directory:
    ```sh
-   git clone https://github.com/wsbespalov/surepatchv2.git
+   cd <your_work_directory>
    ```
-3. Go to surepatch directory:
+4. Clone SurePatch from github:
    ```sh
-   cd surepatchv2
+   git clone https://github.com/WorkSecure/SurePatch-CLI
    ```
-4. Here we will use Dockerfile next format:
-```sh
-FROM ubuntu
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip
-RUN pip3 install --upgrade pip
-COPY . /surepatch
-WORKDIR /surepatch
-RUN pip3 install -r requirements.txt
-WORKDIR /surepatch/scripts
-RUN bash build_docker_ubuntu.sh
-WORKDIR /surepatch/dist
-
-RUN ./surepatch --team=myteam --user=iam.user@mail.com --password=test123 --action=show_platforms
-CMD ["/bin/bash"]
-```
-
-If you do not have a dockerfile, then create it and write in it the commands written above.
-
-If your Dockerfile is different, write in it the commands written above.
-
-Save changes, if it needs.
-
-#### Example 2.
-Doing action via python3 inside docker container
-1. Choose or create directory where will placed surepatch project
-2. Download surepatch into directory (from point 1) from github:
+5. Go to SurePatch directory:
    ```sh
-   git clone <REPOSITORY_GIT>
+   cd SurePatch-CLI
    ```
-3. Go to surepatch directory:
+6. Here we will use Dockerfile next format:
    ```sh
-   cd surepatchv2
+   FROM ubuntu
+   RUN apt-get update
+   RUN apt-get install -y python3 python3-pip
+   RUN pip3 install --upgrade pip
+   COPY . /surepatch
+   WORKDIR /surepatch
+   RUN pip3 install -r requirements.txt
+   WORKDIR /surepatch/build_scripts
+   RUN bash build_ubuntu.sh
+   WORKDIR /surepatch/dist
+   # SUREPATCH COMMANDS
+   RUN ./surepatch_deb --team=<your_team> --user=<your_user_email> --password=<your_password> --action=show_platforms
+   #
+   CMD ["/bin/bash"]
    ```
-4. In this example we will use Dockerfile next format:
-```sh
-FROM ubuntu
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip
-RUN pip3 install --upgrade pip
-COPY . /surepatch
-WORKDIR /surepatch
-RUN pip3 install -r requirements.txt
-CMD ["/bin/bash"]
-```
 
-If you do not have a dockerfile, then create it and write in it the commands written above.
+If you do not have a Dockerfile, then create it and write in it the commands written above.
+Save changes.
 
-If your Dockerfile is different, write in it the commands written above.
-
-Save changes, if it needs.
-
-5. Create docker image via docker build command:
+7. Create image via docker build command:
    ```sh
    docker build -t <image name> .
    ```
-6. Run docker container:
+#### Example 2.
+Doing action via python3 inside docker container
+1. Make sure that Docker is running
+2. Choose or create directory where will placed SurePatch project
+3. Go to the directory:
+   ```sh
+   cd <your_work_directory>
+   ```
+4. Clone SurePatch from github:
+   ```sh
+   git clone https://github.com/WorkSecure/SurePatch-CLI
+   ```
+5. Go to SurePatch directory:
+   ```sh
+   cd SurePatch-CLI
+   ```
+6. In this example we will use Dockerfile next format:
+   ```sh
+   FROM ubuntu
+   RUN apt-get update
+   RUN apt-get install -y python3 python3-pip
+   RUN pip3 install --upgrade pip
+   COPY . /surepatch
+   WORKDIR /surepatch
+   RUN pip3 install -r requirements.txt
+   CMD ["/bin/bash"]
+   ```
+
+If you do not have a Dockerfile, then create it and write in it the commands written above.
+Save changes.
+
+7. Create image via docker build command:
+   ```sh
+   docker build -t <image name> .
+   ```
+8. Run docker container:
    ```sh
    docker run -it <image name>
    ```
-7. Run surepatch.py via python3:
+9. Run surepatch.py via python3:
    ```sh
-   ./surepatch.py --team=myteam iam.user@mail.com --password=test123 --action=show_platforms
+   ./surepatch.py --team=<your_team> --user=<your_user_email> --password=<your_password> --action=show_platforms
    ```
-8. Exit from container:
+10. Exit from container:
    ```sh
    exit
    ```
+### Use CLI App with Jenkins
+This example based on working in Linux Manjaro (based on Arch Linux)
+1. Install Jenkins from package manager (for example Octopi):
+2. Make sure that Docker is running:
+   ```sh
+   systemctl status docker
+   ```
+   If Docker in not running, start it:
+   ```sh
+   sudo systemctl start docker
+   ```
+3. Change permissions for docker.sock:
+   ```sh
+   sudo chmod 777 /var/run/docker.sock
+   ```
+4. Make sure that Jenkins is running:
+   ```sh
+   systemctl status jenkins
+   ```
+   If Jenkins in not running, start it:
+   ```sh
+   sudo systemctl start jenkins
+   ```
+5. After installation, open a browser and connect to the following URL:
+   ```sh
+   http://localhost:8090
+   ```
+6. You will need to copy the initial password from the file system of the server:
+  ```sh
+  sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+  ```
+7. Copy password from output of command 'cat' and paste it in Jenkins in browser.
+8. Install suggested plugins.
+9. Create the first Administrator user and press Save and Finish.
+10. Create Dockerfile as following:
+   ```sh
+   FROM ubuntu
+   RUN apt-get update
+   RUN apt-get install -y python3 python3-pip
+   RUN pip3 install --upgrade pip
+   COPY . /surepatch
+   WORKDIR /surepatch
+   RUN pip3 install -r requirements.txt
+   WORKDIR /surepatch/build_scripts
+   RUN bash build_ubuntu.sh
+   WORKDIR /surepatch/dist
+   # SUREPATCH COMMANDS
+   RUN ./surepatch_deb --team=<your_team> --user=<your_user_email> --password=<your_password> --action=show_platforms
+   ```
+Save the Dockerfile in root of project.
+
+11. Now create Jenkinsfile with next commands and save it in root of project:
+   ```sh
+   pipeline {
+       agent { dockerfile true }
+       stages {
+           stage('Test') {
+               steps {
+                   echo "Complete work"
+               }
+           }
+       }
+   }
+   ```
+12. Go to Jenkins in browser and create job.
+13. Input name of job and choose Pipeline type and press OK.
+14. In section Pipeline in Definition select Pipeline script from SCM. In SCM field select git and specify Repository URL. After this press Save.
+15. Now press button Build Now from left . You will see new build in Build History where you can look at Console Output of build.
+#### Result of Jenkins work
+   ```sh
+   Started by user <your_username>
+   Obtained Jenkinsfile from git <repository_url>
+   ...
+   [test surepatch] Running shell script
+   + docker build -t 8821a26d25a6a51a13e94fe1fe068d93d4d5a59c -f Dockerfile .
+   Sending build context to Docker daemon  37.44MB
+
+   Step 1/12 : FROM ubuntu
+   Step 2/12 : RUN apt-get update
+   Step 3/12 : RUN apt-get install -y python3 python3-pip
+   Step 4/12 : RUN pip3 install --upgrade pip
+   Step 5/12 : COPY . /surepatch
+   Step 6/12 : WORKDIR /surepatch
+   Step 7/12 : RUN pip3 install -r requirements.txt
+   # Installing requirements
+   Step 8/12 : WORKDIR /surepatch/build_scripts
+   Step 9/12 : RUN bash build_ubuntu.sh
+   Start build...................
+   Step 10/12 : WORKDIR /surepatch/dist
+   Step 11/12 : RUN ./surepatch_deb --team=<your_team> --user=<your_user_email> --password=<your_password> --action=show_platforms
+   Login success.
+   Platforms:
+  +Platforms----+------------------------+
+  | Name        | Description            |
+  +-------------+------------------------+
+  | wintest     | wintestPlatform        |
+  | mactest     | mactestPlatform        |
+  | mactest2    | mactest2Platform       |
+  | mfa         | mfa                    |
+  | docker_test | Tests for Docker Usage |
+  +-------------+------------------------+
+  Complete successfully with targets ['']
+  Process 0 components
+  Step 12/12 : CMD ["/bin/bash"]
+  ...
+  [Pipeline] {
+  [Pipeline] stage
+  [Pipeline] { (Test)
+  [Pipeline] echo
+  Complete work
+  [Pipeline] }
+  [Pipeline] // stage
+  [Pipeline] }
+  ...
+  Finished: SUCCESS
+  ```
 # License
 ...
 # (c) BrainBankers, 2018.

@@ -150,10 +150,10 @@ You can change directly in file or with the help of save_config command.
 @ surepatch.py --action=save_config --team=testers --user=<your_user_email> --password=<your_password> --logo=off
 ```
 # Login variants
-Note, that login operation call before every CLI App run to make your server information in actial state, so authirization parameters should be define in command line interface in CLI App or in config file.
+Note, that login operation call before every CLI App run to make your server information in actual state, so authorization parameters should be define in command line interface in CLI App or in config file.
 ### 1. With auth token from CLI App parameters
-This variant usefull for quick authirization with auth token from surepatch server. This is first priority login way.
-Note, that you should point your irganization with --team parameter.
+This variant useful for quick authorization with auth token from surepatch server. This is first priority login way.
+Note, that you should point your organization with --team parameter.
 For example we want look through our issues:
 ```sh
 @ surepatch  --action=show_issues --platform=wintest --project=my_platform --auth_token=3a4953e5sdf1235df598b34e434fd0754e3 --team=<your_team>
@@ -189,7 +189,7 @@ And than:
 @ surepatch --action=show_projects --platform=myplatform
 ```
 
-# Important notes:
+# Important notes
 - If you do not explicitly specify the parameters, they will be set to the default values:
 
   --format=system and --method=auto, so you can use short command line notations.

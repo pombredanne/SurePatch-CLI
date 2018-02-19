@@ -1,0 +1,4 @@
+include LICENSE
+include build_scripts/*
+include packages_examples/*
+include scripts_examples/*

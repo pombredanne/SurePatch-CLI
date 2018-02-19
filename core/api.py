@@ -10,7 +10,11 @@ from core.project_helper.project_helper import ProjectHelper
 from core.set_helper.set_helper import SetHelper
 from core.show_helper.show_helper import ShowHelper
 from core.components_helper.components_helper import ComponentsHelper
-
+from core.os_parameters import get_os_platform
+from core.os_parameters import get_os_version
+from core.os_parameters import get_os_sp
+from core.os_parameters import get_os_release
+from core.os_parameters import get_os_machine
 
 class API(object):
     """Main CLI App API.
@@ -30,7 +34,10 @@ class API(object):
         :return: result, modify api_data
         """
 
-        if not self.check_action_type_match(api_data=api_data):
+        if not self.validator_for_api_data_structure(api_data=api_data):
+            return False
+
+        if not self.validator_for_action_type(api_data=api_data):
             return False
 
         if api_data['action'] == Actions.SAVE_CONFIG:
@@ -587,7 +594,7 @@ class API(object):
                     api_data['file'] is not None:
                 if not set_helper.collect_data_for_set_yarn_lock_system_path(api_data=api_data):
                     return False
-        
+
         if len(api_data['components']) > 0:
             return self.web_api.send_create_new_component_set_request(api_data=api_data)
 
@@ -676,7 +683,7 @@ class API(object):
         return False
 
     # -------------------------------------------------------------------------
-    # Delete
+    # Delete Platform ot Project
     # -------------------------------------------------------------------------
 
     @staticmethod
@@ -702,7 +709,7 @@ class API(object):
         return project_helper.delete_project(api_data=api_data)
 
     # -------------------------------------------------------------------------
-    # Archive
+    # Archive Platform or Project
     # -------------------------------------------------------------------------
 
     @staticmethod
@@ -728,7 +735,7 @@ class API(object):
         return project_helper.archive_project(api_data=api_data)
 
     # -------------------------------------------------------------------------
-    # Restore
+    # Restore Platform or Project
     # -------------------------------------------------------------------------
 
     @staticmethod
@@ -746,19 +753,113 @@ class API(object):
     def action_restore_project(api_data):
         """
         Run action: Restore Project from Archive.
-        :param api_data:
-        :return:
+        :param api_data: api data set
+        :return: result
         """
         project_helper = ProjectHelper()
 
         return project_helper.restore_project(api_data=api_data)
 
     # -------------------------------------------------------------------------
-    # Checkers
+    # Validators
     # -------------------------------------------------------------------------
 
     @staticmethod
-    def check_action_type_match(api_data):
+    def validator_for_api_data_structure(api_data):
+        # type: (dict) -> bool
+        """
+        Validate api_data contents.
+        :param api_data: api data set
+        :return: result
+        """
+
+        # If app execute as python module
+        if 'os_type' not in api_data:
+            api_data['os_type'] = get_os_platform()
+        if 'os_version' not in api_data:
+            api_data['os_version'] = get_os_version(get_os_platform())
+        if 'os_sp' not in api_data:
+            api_data['os_sp'] = get_os_sp(get_os_platform())
+        if 'os_release' not in api_data:
+            api_data['os_release'] = get_os_release()
+        if 'os_machine' not in api_data:
+            api_data['os_machine'] = get_os_machine()
+
+        # For login mode
+        if 'auth_token' not in api_data:
+            api_data['auth_token'] = None
+
+        if api_data['auth_token'] is not None and api_data['auth_token'] != '':
+            api_data['login_method'] = 'token'
+        else:
+            if (api_data['user'] is not None and api_data['user'] != '') and \
+                    api_data['password'] is not None and api_data['password'] != '':
+                api_data['login_method'] = 'username_and_password'
+            else:
+                api_data['login_method'] = 'config_file'
+
+        # For targets
+        if 'target' not in api_data:
+            api_data['target'] = None
+
+        if api_data['target'] is None:
+            api_data['target'] = ''
+
+        # For files
+        if 'file' not in api_data:
+            api_data['file'] = None
+
+        if api_data['file'] is None:
+            api_data['file'] = 'no'
+
+        # For methods
+        if 'method' not in api_data:
+            api_data['method'] = None
+
+        if api_data['method'] is None:
+            api_data['method'] = Methods.AUTO
+
+        # For formats
+        if 'format' not in api_data:
+            api_data['format'] = None
+
+        if api_data['format'] is None:
+            api_data['format'] = Formats.SYSTEM
+
+        # Define if targets more than one
+        targets = api_data['target'].replace('[', '').replace(']', '').replace(' ', '').split(',')
+
+        if len(targets) == 0:
+            print_line('Wrong number of targets.')
+            return 1
+
+        api_data['target'] = targets
+
+        # Define if files more than one, if it is true - redefine files as list with length of targets
+        files = api_data['file'].replace('[', '').replace(']', '').replace(' ', '').split(',')
+
+        if len(targets) != len(files):
+            print_line('Number of targets not equals number of files. For targets, '
+                       'that do not require files - use "no".')
+            print_line('For example: ... --target[os,req] '
+                       '--file=no,/home/user/project/requirements.txt.')
+            return 1
+
+        api_data['file'] = []
+
+        for file in files:
+            if file == 'no':
+                api_data['file'].append(None)
+            else:
+                api_data['file'].append(file)
+
+        api_data['components'] = []
+        api_data['packages'] = []
+
+        return True
+
+    @staticmethod
+    def validator_for_action_type(api_data):
         """
         Check if action type, pointed in arguments match with template.
         :param api_data: api data set

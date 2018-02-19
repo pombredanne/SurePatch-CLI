@@ -14,6 +14,15 @@ class SetHelper(object):
 
     def create_set_validate(self, api_data):
         # type: (dict) -> bool
+
+        if 'platform' not in api_data:
+            print_line('There are no --platform parameter given.')
+            return False
+
+        if 'project' not in api_data:
+            print_line('There are no --project parameter given.')
+            return False
+
         if api_data['platform'] is None:
             print_line('Empty Platform name. Please use --platform=platform_name parameter.')
             return False

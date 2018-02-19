@@ -18,6 +18,10 @@ class PlatformHelper(object):
         :param api_data:
         :return:
         """
+        if 'platform' not in api_data:
+            print_line('There are no --platform parameter given.')
+            return False
+
         if api_data['platform'] is None or api_data['platform'] == '':
             print_line('Empty platform name, please use --platform flag.')
             return False

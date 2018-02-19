@@ -543,6 +543,28 @@ Fix vulnerabilities and than check changes like this
 ```sh
 @ surepatch --platform=newtest --action=create_set --project=pyproject --target=[os,pip,req] --file=[no,no,/home/user/workspace/pythonproject/requirements.txt]
 ```
+# Using as python module
+After installation via pip, you can use surepatch as python module like this:
+```sh
+from surepatch import surepatch_api
+
+data = dict(
+    team='your_team',
+    user='your_mail',
+    password='your_password',
+    login_method='username_and_password',
+    action='create_project',
+    platform='your_platform',
+    project='your_npm_project',
+    description='Tests of surepatch as python module',
+    target='npm'
+)
+
+if surepatch_api.run_action(api_data=data):
+    print('OK')
+else:
+    print('Error')
+```
 ### Use CLI App with docker
 Complete with standart ubuntu docker image from docker hub.
 #### Example 1.

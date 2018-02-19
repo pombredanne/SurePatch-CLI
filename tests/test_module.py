@@ -18,9 +18,9 @@ data = dict(
     login_method='username_and_password',
     action='create_project',
     platform='module',
-    project='pip_none',
+    project='npm_none',
     description='Tests of module imports',
-    target='pip'
+    target='npm'
 )
 
 if surepatch_api.run_action(api_data=data):

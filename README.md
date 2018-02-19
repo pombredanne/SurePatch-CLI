@@ -39,14 +39,22 @@ This application is designed to work with the Surepatch Project without using th
 
 # Installation
 ## From pip install
-...
+You can get python module of surepatch by pip installation
+```sh
+@ pip install surepatch
+```
 ## From OS package
-...
+You can download build for your operation system from [Release](https://github.com/WorkSecure/SurePatch-CLI/releases) section of repository.
 ## From Gihtub
-[Package](http://surepatch.com)
-
+### Clone from github with SSH
+```sh
+@ git clone git@github.com:WorkSecure/SurePatch-CLI.git
+```
+### Clone from github with HTTPS
+```sh
+@ https://github.com/WorkSecure/SurePatch-CLI.git
+```
 # Build
-
 ## Build manually as executable for your OS 
 You can build your own executable "surepatch" file with pyinstaller. This module already included into project requirements.txt file,
 so, you should install python3, download source code and execute "build" script from build_scripts folder or use the next command from project folder:

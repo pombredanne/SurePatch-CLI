@@ -43,6 +43,9 @@ class ShowHelper(object):
         for platform in api_data['organization']['platforms']:
             platforms.append({'name': platform['name'], 'description': platform['description']})
 
+        if 'file' not in api_data:
+            api_data['file'] = None
+
         print_platforms(platforms=platforms, title="Platforms", filename=api_data['file'])
 
         return True
@@ -81,6 +84,9 @@ class ShowHelper(object):
         for project in api_data['organization']['platforms'][platform_number]['projects']:
             projects.append({'name': project['name'], 'description': 'default project'})
 
+        if 'file' not in api_data:
+            api_data['file'] = None
+
         print_projects(projects=projects, title=api_data['platform'], filename=api_data['file'])
 
         return True
@@ -105,6 +111,9 @@ class ShowHelper(object):
         if components[0] is None:
             print_line('Get component set error.')
             return False
+
+        if 'file' not in api_data:
+            api_data['file'] = None
 
         print_components(components=components, title=api_data['platform'] + '/' + api_data['project'], filename=api_data['file'])
 
@@ -146,6 +155,9 @@ class ShowHelper(object):
             printed_issues.append({'name': 'author', 'description': issue['author']})
             printed_issues.append({'name': 'status', 'description': issue['status']})
             printed_issues.append({'name': '\n', 'description': ''})
+
+        if 'file' not in api_data:
+            api_data['file'] = None
 
         print_issues(issues=printed_issues, title=api_data['platform'] + '/' + api_data['project'], filename=api_data['file'])
 

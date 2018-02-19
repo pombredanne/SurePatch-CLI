@@ -8,13 +8,13 @@ def read(fname):
 
 setup(
     name="surepatch",
-    version="0.2.3",
+    version="0.1.1",
     author="BrainBankers",
     author_email="ws.bespalov@gmail.com",
     description=("CLI App - Console client for SurePatch project"),
     packages=["surepatch", ],
     license="BSD",
-    url="",
+    url="https://github.com/WorkSecure/SurePatch-CLI",
     long_description=read("README.md"),
     classifiers=[
         "Development Status :: 5 - Alpha",

@@ -26,6 +26,9 @@ class PlatformHelper(object):
             print_line('Empty platform name, please use --platform flag.')
             return False
 
+        if 'description' not in api_data:
+            api_data['description'] = None
+
         if api_data['description'] is None or api_data['description'] == '':
             print_line('Empty platform description. Change description to "default platform".')
             api_data['description'] = "default platform"

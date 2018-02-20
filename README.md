@@ -26,6 +26,7 @@ This application is designed to work with the Surepatch Project without using th
 
 # Table of contents
 - Installation
+- Requirements
 - Build
 - CLI App arguments
 - CLI App config
@@ -54,6 +55,14 @@ You can download build for your operation system from [Release](https://github.c
 ```sh
 @ https://github.com/WorkSecure/SurePatch-CLI.git
 ```
+# Requirements
+All requirements freeze in file requirements.txt:
+- Python 3.6 or later
+- terminaltables 3.1.0
+- PyYaml 3.12
+- requests 2.18.4
+- xmltodict 0.11.0
+- PyInstaller 3.3.1
 # Build
 ## Build manually as executable for your OS 
 You can build your own executable "surepatch" file with pyinstaller. This module already included into project requirements.txt file,

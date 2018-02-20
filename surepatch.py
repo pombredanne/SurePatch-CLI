@@ -137,6 +137,13 @@ def create_parser():
         help='Print logo or not (on/off)'
     )
 
+    parser.add_argument(
+        '--logging',
+        type=str,
+        required=False,
+        help='Use log file or not (on/off)'
+    )
+
     return parser.parse_args()
 
 
@@ -167,7 +174,8 @@ def main():
         os_machine=get_os_machine(),
         components=[],
         auth_token=arguments.auth_token,
-        logo=arguments.logo
+        logo=arguments.logo,
+        logging=arguments.logging
     )
 
     if arguments.logo is not None:

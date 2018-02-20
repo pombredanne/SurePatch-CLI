@@ -908,7 +908,8 @@ class API(object):
             user=api_data['user'],
             password=api_data['password'],
             auth_token=api_data['auth_token'],
-            logo=api_data['logo']
+            logo=api_data['logo'],
+            logging=api_data['logging']
         )
 
         with open(full_path, 'w') as yaml_config_file:
@@ -970,10 +971,15 @@ class API(object):
 
                 api_data['auth_token'] = config['auth_token']
 
-                if 'logi' not in config:
+                if 'logo' not in config:
                     config['logo'] = 'off'
 
                 api_data['logo'] = config['logo']
+
+                if 'logging' not in config:
+                    config['logging'] = 'off'
+
+                api_data['logging'] = config['logging']
 
                 return True
 

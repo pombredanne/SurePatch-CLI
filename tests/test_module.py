@@ -26,7 +26,7 @@ mypassword = login_data['password']
 # myname = 'e-mail'
 # mypassword = 'password'
 
-myplatform = 'moduletest2'
+myplatform = 'moduletest11'
 
 demo_set = [
     dict(

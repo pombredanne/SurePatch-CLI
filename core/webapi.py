@@ -54,7 +54,6 @@ class WebAPI(object):
         components=[],
         project_url=None)
     issues_payload = dict(
-
     )
 
     def send_login_token_request(self, api_data):

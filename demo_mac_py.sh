@@ -54,8 +54,8 @@ python3 surepatch.py --platform=mactest --action=create_project --project=php_co
 echo "16. create project PHP Composer Lock auto system from path /Users/admin/packages_examples/composer1.lock"
 python3 surepatch.py --platform=mactest --action=create_project --project=php_composer_lock --target=php_composer_lock --file=/Users/admin/packages_examples/composer1.lock
 
-echo "17. create project POM auto system from path /Users/admin/packages_examples/pom1.xml"
-python3 surepatch.py --platform=mactest --action=create_project --project=pom --target=pom --file=/Users/admin/packages_examples/pom1.xml
+echo "17. create project POM auto system from path /Users/admin/packages_examples/pom2.xml"
+python3 surepatch.py --platform=mactest --action=create_project --project=pom --target=pom --file=/Users/admin/packages_examples/pom2.xml
 
 echo "18. create project YARN auto system from path /Users/admin/packages_examples/yarn.lock"
 python3 surepatch.py --platform=mactest --action=create_project --project=yarn --target=yarn --file=/Users/admin/packages_examples/yarn.lock
@@ -120,8 +120,8 @@ python3 surepatch.py --platform=mactest --action=create_set --project=settest --
 echo "36. create project PHP Composer Lock auto system from path /Users/admin/packages_examples/composer1.lock"
 python3 surepatch.py --platform=mactest --action=create_set --project=settest --target=php_composer_lock --file=/Users/admin/packages_examples/composer1.lock
 
-echo "37. create project POM auto system from path /Users/admin/packages_examples/pom.xml"
-python3 surepatch.py --platform=mactest --action=create_set --project=settest --target=pom --file=/Users/admin/packages_examples/pom.xml
+echo "37. create project POM auto system from path /Users/admin/packages_examples/pom2.xml"
+python3 surepatch.py --platform=mactest --action=create_set --project=settest --target=pom --file=/Users/admin/packages_examples/pom2.xml
 
 echo "38. create project YARN auto system from path /Users/admin/packages_examples/yarn.lock"
 python3 surepatch.py --platform=mactest --action=create_set --project=settest --target=yarn --file=/Users/admin/packages_examples/yarn.lock
@@ -136,7 +136,7 @@ python3 surepatch.py --platform=mactest --action=create_set --project=settest --
 echo "DEMO FOR MULTITARGET OPERATIONS"
 
 echo "41. create project for OS, PIP, POM, GEM and Gemfile"
-python3 surepatch.py --action=create_project --platform=mactest --project=multitest2 --target=[os,pip,pom,gem,gemfile] --file=[no,no,/Users/admin/packages_examples/pom.xml,no,/Users/admin/packages_examples/Gemfile]
+python3 surepatch.py --action=create_project --platform=mactest --project=multitest2 --target=[os,pip,pom,gem,gemfile] --file=[no,no,/Users/admin/packages_examples/pom2.xml,no,/Users/admin/packages_examples/Gemfile]
 
 echo "42. create set for YARN, PIP3 and Gemfile.lock"
 python3 surepatch.py --action=create_set --platform=mactest --project=settest --target=[yarn,pip3,gemfile_lock] --file=[/Users/admin/packages_examples/yarn.lock,no,/Users/admin/packages_examples/Gemfile.lock]

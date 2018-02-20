@@ -63,6 +63,11 @@ All requirements freeze in file requirements.txt:
 - requests 2.18.4
 - xmltodict 0.11.0
 - PyInstaller 3.3.1
+
+The requirements can be installed with pip:
+```sh
+sudo pip3 install -r requirements.txt
+```
 # Build
 ## Build manually as executable for your OS 
 You can build your own executable "surepatch" file with pyinstaller. This module already included into project requirements.txt file,

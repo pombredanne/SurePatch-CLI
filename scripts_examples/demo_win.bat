@@ -52,8 +52,8 @@ surepatch_win.exe --platform=wintest --action=create_project --project=php_compo
 echo "16. create project PHP Composer Lock auto system from path c:\composer1.lock"
 surepatch_win.exe --platform=wintest --action=create_project --project=php_composer_lock --target=php_composer_lock --file=c:\composer1.lock
 
-echo "17. create project POM auto system from path c:\pom2.xml"
-surepatch_win.exe --platform=wintest --action=create_project --project=pom --target=pom --file=c:\pom2.xml
+echo "17. create project POM auto system from path c:\pom.xml"
+surepatch_win.exe --platform=wintest --action=create_project --project=pom --target=pom --file=c:\pom.xml
 
 echo "18. create project YARN auto system from path c:\yarn.lock"
 surepatch_win.exe --platform=wintest --action=create_project --project=yarn --target=yarn --file=c:\yarn.lock
@@ -118,8 +118,8 @@ surepatch_win.exe --platform=wintest --action=create_set --project=settest --tar
 echo "36. create project PHP Composer Lock auto system from path c:\composer1.lock"
 surepatch_win.exe --platform=wintest --action=create_set --project=settest --target=php_composer_lock --file=c:\composer1.lock
 
-echo "37. create project POM auto system from path c:\pom2.xml"
-surepatch_win.exe --platform=wintest --action=create_set --project=settest --target=pom --file=c:\pom2.xml
+echo "37. create project POM auto system from path c:\pom.xml"
+surepatch_win.exe --platform=wintest --action=create_set --project=settest --target=pom --file=c:\pom.xml
 
 echo "38. create project YARN auto system from path c:\yarn.lock"
 surepatch_win.exe --platform=wintest --action=create_set --project=settest --target=yarn --file=c:\yarn.lock
@@ -134,7 +134,7 @@ surepatch_win.exe --platform=wintest --action=create_set --project=settest --for
 echo "DEMO FOR MULTITARGET OPERATIONS"
 
 echo "41. create project for OS, PIP, POM, GEM and Gemfile"
-surepatch_win.exe --action=create_project --platform=wintest --project=multitest2 --target=[os,pip,pom,gem,gemfile] --file=[no,no,c:\pom2.xml,no,c:\Gemfile]
+surepatch_win.exe --action=create_project --platform=wintest --project=multitest2 --target=[os,pip,pom,gem,gemfile] --file=[no,no,c:\pom.xml,no,c:\Gemfile]
 
 echo "42. create set for YARN, PIP3 and Gemfile.lock"
 surepatch_win.exe --action=create_set --platform=wintest --project=settest --target=[yarn,pip3,gemfile_lock] --file=[c:\yarn.lock,no,c:\Gemfile.lock]

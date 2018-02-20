@@ -54,8 +54,8 @@ echo "15. create project PHP Composer JSON auto system from path /home/user/comp
 echo "16. create project PHP Composer Lock auto system from path /home/user/composer1.lock"
 ./surepatch_deb --platform=debtest --action=create_project --project=php_composer_lock --target=php_composer_lock --file=/home/user/composer1.lock
 
-echo "17. create project POM auto system from path /home/user/pom2.xml"
-./surepatch_deb --platform=debtest --action=create_project --project=pom --target=pom --file=/home/user/pom2.xml
+echo "17. create project POM auto system from path /home/user/pom.xml"
+./surepatch_deb --platform=debtest --action=create_project --project=pom --target=pom --file=/home/user/pom.xml
 
 echo "18. create project YARN auto system from path /home/user/yarn.lock"
 ./surepatch_deb --platform=debtest --action=create_project --project=yarn --target=yarn --file=/home/user/yarn.lock
@@ -120,8 +120,8 @@ echo "35. create project PHP Composer JSON auto system from path /home/user/comp
 echo "36. create project PHP Composer Lock auto system from path /home/user/composer1.lock"
 ./surepatch_deb --platform=debtest --action=create_set --project=settest --target=php_composer_lock --file=/home/user/composer1.lock
 
-echo "37. create project POM auto system from path /home/user/pom2.xml"
-./surepatch_deb --platform=debtest --action=create_set --project=settest --target=pom --file=/home/user/pom2.xml
+echo "37. create project POM auto system from path /home/user/pom.xml"
+./surepatch_deb --platform=debtest --action=create_set --project=settest --target=pom --file=/home/user/pom.xml
 
 echo "38. create project YARN auto system from path /home/user/yarn.lock"
 ./surepatch_deb --platform=debtest --action=create_set --project=settest --target=yarn --file=/home/user/yarn.lock
@@ -136,7 +136,7 @@ echo "40. create project USER manual"
 echo "DEMO FOR MULTITARGET OPERATIONS"
 
 echo "41. create project for OS, PIP, POM, GEM and Gemfile"
-./surepatch_deb --action=create_project --platform=debtest --project=multitest2 --target=[os,pip,pom,gem,gemfile] --file=[no,no,/home/user/pom2.xml,no,/home/user/Gemfile]
+./surepatch_deb --action=create_project --platform=debtest --project=multitest2 --target=[os,pip,pom,gem,gemfile] --file=[no,no,/home/user/pom.xml,no,/home/user/Gemfile]
 
 echo "42. create set for YARN, PIP3 and Gemfile.lock"
 ./surepatch_deb --action=create_set --platform=debtest --project=settest --target=[yarn,pip3,gemfile_lock] --file=[/home/user/yarn.lock,no,/home/user/Gemfile.lock]

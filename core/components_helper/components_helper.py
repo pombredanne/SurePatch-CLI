@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Module for components collecting, parsing and processing.
+"""
+
 import re
 import os
 import sys
@@ -13,6 +17,8 @@ import subprocess
 from core.interface import ask
 from core.interface import print_line
 from core.webapi import WebAPI
+
+# Recursive function for NPM result parsing
 
 raw_npm_components = []
 
@@ -31,6 +37,10 @@ def walkdict(data):
 
 
 class ComponentsHelper(object):
+    """
+    Component Helper Class.
+    """
+
 
     def __init__(self):
         self.web_api = WebAPI()
@@ -46,23 +56,44 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # For MS Windows OS 10 (use powershell command)
+
         if api_data['os_type'] == OSs.WINDOWS:
 
             if api_data['os_version'] == '10' or api_data['os_version'] == '8':
+
+                # Collect Windows packages from powershell request
+
                 if self.load_windows_10_packages_from_shell(api_data=api_data):
+
+                    # Decode packages for different encodings
+
                     try:
                         api_data['packages'] = api_data['packages'].decode('utf-8').replace('\r', '').split('\n')[9:]
+
                     except UnicodeDecodeError as decode_error:
+                        print_line('Get an decode exception: {0}. Try another decoder.'.format(decode_error))
                         try:
                             api_data['packages'] = api_data['packages'].replace('\r', '').split('\n')[9:]
+
                         except TypeError as type_error:
+                            print_line('Get an type_error exception: {0}. Try another decoder.'.format(type_error))
                             api_data['packages'] = api_data['packages'].decode("utf-8", "backslashreplace").replace('\r', '').split('\n')[9:]
+
+                    # Parse collected packages
+
                     if self.parse_windows_10_packages(api_data=api_data):
-                        print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                        print_line('Collect {0} Windows 10 raw components before processing and '
+                                   'verification'.format(len(api_data['components'])))
                         return True
 
-                print_line('Failed to load or parse OS components.')
+                # Otherwise
+
+                print_line('Failed to load or parse MS Windows 10 components.')
                 return False
+
+            # Not supported Windows versions
 
             elif api_data['os_version'] == '7':
                 print_line('Windows 7 does not support yet.')
@@ -72,42 +103,82 @@ class ComponentsHelper(object):
                 print_line('Windows type not defined.')
                 return False
 
+        # For Mac OS
+
         elif api_data['os_type'] == OSs.MACOS:
 
+            # Collect Mac OS packages from shell request
+
             if self.load_macos_packages_from_shell(api_data=api_data):
+
+                # Parse packages
+
                 if self.parse_macos_packages(api_data=api_data):
-                    print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                    print_line('Collect {0} Mac OS raw components before processing and '
+                               'verification'.format(len(api_data['components'])))
                     return True
+
+            # Otherwise
 
             print_line('Failed load or parse MACOS components.')
             return False
+
+        # For CentOS
 
         elif api_data['os_type'] == OSs.CENTOS:
             print_line('CentOS not support yet.')
             return False
 
+        # For Debian-like OSs
+
         elif api_data['os_type'] == OSs.DEBIAN:
+
+            # Collect Debian packages from shell request
+
             if self.load_ubuntu_packages_from_shell(api_data=api_data):
+
+                # Parse packages
+
                 if self.parse_ubuntu_packages(api_data=api_data):
-                    print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                    print_line('Collect {0} Debian raw components before processing and '
+                               'verification'.format(len(api_data['components'])))
                     return True
 
-            print_line('Failed load or parse OS components.')
+            # Otherwise
+
+            print_line('Failed load or parse Debian OS components.')
             return False
+
+        # For ubuntu OS
 
         elif api_data['os_type'] == OSs.UBUNTU:
+
+            # Collect Ubuntu packages from shell request
+
             if self.load_ubuntu_packages_from_shell(api_data=api_data):
+
+                # Parse packages
+
                 if self.parse_ubuntu_packages(api_data=api_data):
-                    print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                    print_line('Collect {0} Ubuntu raw components before processing and '
+                               'verification'.format(len(api_data['components'])))
                     return True
 
-            print_line('Failed load or parse OS components.')
+            # Otherwise
+
+            print_line('Failed load or parse Ubuntu OS components.')
             return False
 
+        # For Fedora project
+
         elif api_data['os_type'] == OSs.FEDORA:
+
+            # Collect Fedora packages from shell request
+
             if self.load_fedora_packages_from_shell(api_data=api_data):
                 if self.parse_fedora_packages(api_data=api_data):
-                    print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                    print_line('Collect {0} Fedora raw components before processing and '
+                               'verification'.format(len(api_data['components'])))
                     return True
 
             print_line('Failed parse OS components.')
@@ -121,52 +192,108 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # For MS Windows OS
+
         if api_data['os_type'] == OSs.WINDOWS:
+
             if api_data['os_version'] == '10' or api_data['os_version'] == '8':
+
+                # Collect Windows 10 packages from shell request
+
                 if self.load_windows_10_packages_from_path(api_data=api_data):
+
+                    # Parse Windows 10 packages
+
                     if self.parse_windows_10_packages(api_data=api_data):
-                        print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                        print_line('Collect {0} Windows 10 raw components before processing and '
+                                   'verification'.format(len(api_data['components'])))
                         return True
+
+                # Otherwise
 
                 print_line('Failed load or parse Windows 10 components.')
                 return False
+
+            # Not supported Windows versions
 
             if api_data['os_version'] == '7':
                 print_line('Windows 7 does not support yet.')
                 return False
 
+            else:
+                print_line('Windows version not defined.')
+                return False
+
+        # For Mac OS
+
         elif api_data['os_type'] == OSs.MACOS:
+
+            # Collect Mac OS packages from shell request
+
             if self.load_macos_packages_from_path(api_data=api_data):
+
+                # Parse Mac OS packages
+
                 if self.parse_macos_packages(api_data=api_data):
-                    print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                    print_line('Collect {0} Mac OS raw components before processing and '
+                               'verification'.format(len(api_data['components'])))
                     return True
+
+            # Otherwise
 
             print_line('Failed load or parse MACOS components.')
             return False
+
+        # For CentOS
 
         elif api_data['os_type'] == OSs.CENTOS:
             print_line('CentOS does not support yet.')
             return False
 
+        # For Debian and ubuntu OSs
+
         elif api_data['os_type'] == OSs.DEBIAN or api_data['os_type'] == OSs.UBUNTU:
+
+            # Collect OS packages from shell request
+
             if self.load_ubuntu_packages_from_path(api_data=api_data):
+
+                # Parse OS packages
                 if self.parse_ubuntu_packages(api_data=api_data):
-                    print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                    print_line('Collect {0} Debian or Ubuntu raw components before processing and '
+                               'verification'.format(len(api_data['components'])))
                     return True
+
+            # Otherwise
 
             print_line('Failed load or parse Debian OS components.')
             return False
 
+        # For Fedora Project
+
         elif api_data['os_type'] == OSs.FEDORA:
+
+            # Collect Fedora packages from shell request
+
             if self.load_fedora_packages_from_path(api_data=api_data):
+
+                # Parse Fedora packages
+
                 if self.parse_fedora_packages(api_data=api_data):
-                    print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                    print_line('Collect {0} Fedora raw components before processing and '
+                               'verification'.format(len(api_data['components'])))
                     return True
+
+            # Otherwise
 
             print_line('Failed parse Fedora OS components.')
             return False
 
+        # Undefined OS type
+
         else:
+            print_line('Undefined OS type.')
             return False
 
     def get_components_pip_auto_system_none(self, api_data):
@@ -175,12 +302,19 @@ class ComponentsHelper(object):
         Get Python PIP components, collected by pip frozen requirements call.
         :return: result
         """
+
+        # Collect Python 2 PIP packages from shell request
         if self.load_pip_packages_from_shell_legacy(api_data=api_data):
+
+            # Parse packages
             if self.parse_pip_packages_legacy(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} Python PIP raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Problems with PIP components loading.')
+        # Otherwise
+
+        print_line('Problems with Python PIP components loading from shell reques.')
         return False
 
     def get_components_pip_auto_system_path(self, api_data):
@@ -190,12 +324,21 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect Python 2 PIP packages from file (already filled by shell command before)
+
         if self.load_pip_packages_from_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_pip_packages_from_path(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} Python PIP raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Something wrong with packages in file path {0}.'.format(api_data['file']))
+        # Otherwise
+
+        print_line('Something wrong with Python PIP packages in file path {0}.'.format(api_data['file']))
         return False
 
     def get_components_requirements_auto_system_path(self, api_data):
@@ -205,12 +348,22 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect Python packages from requirements.txt file
+
         if self.load_pip_packages_from_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_pip_packages_from_path(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} requirements.txt raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Something wrong with packages in file path {0}.'.format(api_data['file']))
+        # Otherwise
+
+        print_line('Something wrong with requirements.txt packages '
+                   'in file path {0}.'.format(api_data['file']))
         return False
 
     def get_components_npm_auto_system_path(self, api_data):
@@ -220,13 +373,23 @@ class ComponentsHelper(object):
         :param api_data:
         :return:
         """
+
+        # Collect NPM packages from file, already filled with packages from shell request
+
         if self.load_npm_packages_from_path(api_data=api_data):
+
+            # Parse packages
+
             api_data['packages'] = raw_npm_components
+
             if self.parse_npm_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} NPM raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Something wrong with packages in file path {0}.'.format(api_data['file']))
+        # Otherwise
+
+        print_line('Something wrong with NPM packages in file path {0}.'.format(api_data['file']))
         return False
 
     def get_components_package_json_auto_system_path(self, api_data):
@@ -236,12 +399,20 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect NPM packages from package.json file
+
         if self.load_package_json_packages_from_path(api_data=api_data):
+
+            # Parse packages
             if self.parse_package_json_packages_from_path(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Something wrong with packages in file path {0}.'.format(api_data['file']))
+        # Otherwise
+
+        print_line('Something wrong with NPM package.json packages in file path {0}.'.format(api_data['file']))
         return False
 
     def get_components_gem_auto_system_path(self, api_data):
@@ -251,10 +422,19 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect Ruby packages from file, filled before with gem list shell request
+
         if self.load_gem_packages_from_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_gem_packages_from_path(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} Ruby raw packages before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
+
+        # Otherwise
 
         print_line('Something wrong with packages in file path {0}.'.format(api_data['file']))
         return False
@@ -266,14 +446,23 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect NPM packages from shell request from root directory
+
         if self.load_npm_packages(api_data=api_data, local=False):
+
+            # Parse packages
+
             api_data['packages'] = raw_npm_components
+
             if self.parse_npm_packages(api_data=api_data):
-            # if self.parse_npm_lock_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Something wrong with packages in NPM system call.')
+        # Otherwise
+
+        print_line('Something wrong with packages in NPM shell request from root directory.')
         return False
 
     def get_components_npm_local_auto_system_none(self, api_data):
@@ -283,14 +472,22 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect NPM packages from shell request from local directory, defined by --file parameter
+
         if self.load_npm_packages(api_data=api_data, local=True):
+
+            # Parse packages
             api_data['packages'] = raw_npm_components
+
             if self.parse_npm_packages(api_data=api_data):
-            # if self.parse_npm_lock_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Something wrong with packages in file path')
+        # Otherwise
+
+        print_line('Something wrong with packages in NPM shell request from local directory.')
         return False
 
     def get_components_npm_lock_auto_system_path(self, api_data):
@@ -300,12 +497,21 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect NPM packages from lock file
+
         if self.load_npm_lock_packages_from_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_npm_lock_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} NPM raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
 
-        print_line('Something wrong with packages in file path')
+        # Otherwise
+
+        print_line('Something wrong with NPM lock packages in file path')
         return False
 
     def get_components_gem_auto_system_none(self, api_data):
@@ -315,10 +521,19 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect Ruby packages from shell request
+
         if self.load_gem_packages_system(api_data=api_data, local=False):
+
+            # Parse packages
+
             if self.parse_gem_packages_system(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} Ruby raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
+
+        # Otherwise
 
         print_line('Something wrong with packages in file path')
         return False
@@ -330,10 +545,19 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect Ruby packages from Gemfile
+
         if self.load_gemfile_packages_from_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_gemfile_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} Ruby Gemfile raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
+
+        # Otherwise
 
         print_line('Failed load or parse Gemfile packages.')
         return False
@@ -345,10 +569,19 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect Ruby packages from Gemfile.lock
+
         if self.load_gemfile_lock_packages_from_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_gemfile_lock_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} Ruby Gemfile.lock raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
+
+        # Otherwise
 
         print_line('Failed parse Gemfile packages.')
         return False
@@ -360,14 +593,21 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Get file to parse
+
         filename = api_data['file']
+
         if os.path.isfile(filename):
+            # If exists
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define user file encoding
 
-            if enc == 'undefined':
+            if self.define_file_encoding(filename=filename) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
+
+            # Collect components from file
 
             components = []
             with open(filename, 'r') as pf:
@@ -377,10 +617,17 @@ class ComponentsHelper(object):
                         if '=' in package:
                             splitted_package = package.split('=')
                             if len(splitted_package) == 2:
-                                components.append({'name': splitted_package[0], 'version': splitted_package[1]})
+                                components.append({
+                                    'name': splitted_package[0],
+                                    'version': splitted_package[1]})
+
+                # Complete components section in api data set
                 api_data['components'] = components
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+
+                print_line('Collect {0} User raw components before processing and verification'.format(len(api_data['components'])))
                 return True
+
+        # Otherwise
 
         print_line('File {0} not found.'.format(filename))
         return False
@@ -391,17 +638,25 @@ class ComponentsHelper(object):
         Get packages from console.
         :return: result
         """
+
+        # Ask User for components and versions
+
         components = []
         if ask('Continue (y/n)? ') == 'n':
             return False
+
         while True:
             name = ask('Enter component name: ')
             version = ask('Enter component version: ')
             components.append({'name': name, 'version': version})
             if ask('Continue (y/n)? ') == 'n':
                 break
+
+        # Complete components section in api data set
+
         api_data['components'] = components
-        print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+        print_line('Collect {0} User raw components before processing and '
+                   'verification'.format(len(api_data['components'])))
         return True
 
     def get_components_php_composer_json_system_path(self, api_data):
@@ -410,10 +665,19 @@ class ComponentsHelper(object):
         Get packages from PHP Composer.json file.
         :return: result
         """
+
+        # Collect packages from PHP Composer.json file
+
         if self.load_php_composer_json_system_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_php_composer_json_system_path(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} PHP Composer.json raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
+
+        # Otherwise
 
         print_line('PHP Composer packages loading error.')
         return False
@@ -424,10 +688,19 @@ class ComponentsHelper(object):
         Get packages from PHP Composer.lock file.
         :return: result
         """
+
+        # Collect packages from PHP Composer.lock file
+
         if self.load_php_composer_lock_system_path(api_data=api_data):
+
+            # Parse packages
+
             if self.parse_php_composer_lock_system_path(api_data=api_data):
-                print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+                print_line('Collect {0} PHP Composer.lock raw components before processing and '
+                           'verification'.format(len(api_data['components'])))
                 return True
+
+        # Otherwise
 
         print_line('PHP Composer.lock packages loading error.')
         return False
@@ -439,9 +712,15 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect packages from Maven pom.xml file
+
         if self.load_maven_pom_components_path(api_data=api_data):
-            print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+            print_line('Collect {0} Maven pom raw components before processing and '
+                       'verification'.format(len(api_data['components'])))
             return True
+
+        # Otherwise
 
         print_line('Maven pom.xml file packages loading error.')
         return False
@@ -453,9 +732,15 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Collect packages from YARN file
+
         if self.load_yarn_lock_components_path(api_data=api_data):
-            print_line('Collect {0} raw components before processing and verification'.format(len(api_data['components'])))
+            print_line('Collect {0} yarn raw components before processing and '
+                       'verification'.format(len(api_data['components'])))
             return True
+
+        # Otherwise
 
         print_line('Yarn.lock file packages loading error.')
         return False
@@ -471,34 +756,48 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
-        filename = api_data['file']
         components = []
 
-        if os.path.exists(filename):
-            enc = self.define_file_encoding(filename=filename)
+        # If file exists
 
-            if enc == 'undefined':
+        if os.path.exists(api_data['file']):
+
+            # Define file encoding
+
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
+            # Get pom file contents
+
             try:
-                with open(api_data['file'], 'r') as fd:
-                    doc = xmltodict.parse(fd.read())
+                with open(api_data['file'], 'r') as file_decrtiptor:
+                    doc = xmltodict.parse(file_decrtiptor.read())
+
+                # Get 'project' section from file
 
                 if 'project' in doc:
                     project = doc['project']
+
                     if 'dependencies' in project:
                         dependencies = project['dependencies']
                         for dependency in dependencies['dependency']:
-                            components.append({"name": dependency["groupId"], "version": dependency["version"]})
+                            components.append({
+                                "name": dependency["groupId"],
+                                "version": dependency["version"]})
+
+                # Complete components section in api data set
+
                 api_data['components'] = components
                 return True
 
-            except Exception as e:
-                print_line('File read exception {0}.'.format(e))
+            except Exception as common_exception:
+                print_line('File read exception {0}.'.format(common_exception))
                 return False
 
-        print_line('File {0} does not exists.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} does not exists.'.format(api_data['file']))
         return False
 
     def load_yarn_lock_components_path(self, api_data):
@@ -508,24 +807,32 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
-        filename = api_data['file']
         components = []
 
-        if os.path.exists(filename):
-            enc = self.define_file_encoding(filename=filename)
+        # If file exists
 
-            if enc == 'undefined':
+        if os.path.exists(api_data['file']):
+
+            # Define file encoding
+
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
+            # Get yarn file contents
+
             try:
-                with open(filename, 'r') as pf:
-                    yarn_file = pf.read()
+                with open(api_data['file'], 'r') as file_descriptor:
+                    yarn_file = file_descriptor.read()
+
+                # Get sections
 
                 yarn_sections = yarn_file.split('\n\n')
 
                 components = []
                 sections = []
+
+                # Filter sections
 
                 for section in yarn_sections:
                     ysection = []
@@ -539,13 +846,21 @@ class ComponentsHelper(object):
                     if len(ysection) > 1:
                         sections.append(ysection)
 
+                # Process sections
+
                 for section in sections:
                     name = section[0].replace(':', '')
                     name = name[:name.index('@')].replace('"', '')
-                    version = section[1].replace(' ', '').replace('version', '').replace('"', '').replace('~', '')
+                    version = section[1]\
+                        .replace(' ', '')\
+                        .replace('version', '')\
+                        .replace('"', '')\
+                        .replace('~', '')
+
                     if version != '*':
                         if '|' not in version:
                             components.append({"name": name, "version": version})
+
                     if len(section) > 4:
                         if 'dependencies' in section[3]:
                             for i in range(4, len(section)):
@@ -557,8 +872,10 @@ class ComponentsHelper(object):
                                     .replace('<', '')\
                                     .replace('>', '')\
                                     .replace('=', '')
-                                dname = ssection[:ssection.index('"')].replace('"', '')
-                                dversion = ssection[ssection.index('"'):].replace('"', '').replace('~', '')
+                                dname = ssection[:ssection.index('"')]\
+                                    .replace('"', '')
+                                dversion = ssection[ssection.index('"'):]\
+                                    .replace('"', '').replace('~', '')
                                 if dversion != '*':
                                     if '|' not in dversion:
                                         components.append({"name": dname, "version": dversion})
@@ -566,11 +883,13 @@ class ComponentsHelper(object):
                 api_data['components'] = components
                 return True
 
-            except Exception as e:
-                print_line('File read exception {0}.'.format(e))
+            except Exception as common_exception:
+                print_line('File read exception {0}.'.format(common_exception))
                 return False
 
-        print_line('File {0} does not exists.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} does not exists.'.format(api_data['file']))
         return False
 
 
@@ -581,24 +900,32 @@ class ComponentsHelper(object):
         :return: result
         """
 
+        # Set command for powershell
+
         cmd = "Get-AppxPackage -AllUsers | Select Name, PackageFullName"
+
+        # Call powershell with command
 
         try:
             proc = subprocess.Popen(["powershell", cmd], stdout=subprocess.PIPE)
             output, error = proc.communicate()
 
             if error:
-                print_line('Powershell command throw {0} code and {1} error message.'.format(proc.returncode, error.strip()))
+                print_line('Powershell command throw {0} code and '
+                           '{1} error message.'.format(proc.returncode, error.strip()))
                 return False
 
             if output:
+                # Normal response from powershell
                 api_data['packages'] = output
                 return True
 
             return False
 
         except OSError as os_error:
-            print_line('Powershell command throw errno: {0}, strerror: {1} and filename: {2}.'.format(os_error.errno, os_error.strerror, os_error.filename))
+            print_line('Powershell command throw errno: {0}, strerror: {1} and '
+                       'filename: {2}.'.format(os_error.errno, os_error.strerror,
+                                               os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -608,37 +935,44 @@ class ComponentsHelper(object):
     def load_windows_10_packages_from_path(self, api_data):
         # type: (dict) -> bool
         """
-        Get OS packages for Windows platform from unloaded file, that was created by shell command manually.
+        Get OS packages for Windows platform from unloaded file,
+        that was created by shell command manually.
         :param filename: path to file
         :return: result
         """
 
-        filename = api_data['file']
+        # If file exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Defined file encoding
 
-            if enc == 'undefined':
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
             try:
-                with open(filename, 'r') as cf:
-                    os_packages = cf.read()
+                with open(api_data['file'], 'r') as file_descriptor:
+                    os_packages = file_descriptor.read()
+
+                    # If empty
 
                     if os_packages is None:
-                        print_line('Cant read file: {0}.'.format(filename))
+                        print_line('Cant read file: {0}.'.format(api_data['file']))
                         return False
+
+                    # Get packages from file comtents
 
                     api_data['packages'] = os_packages.replace('\r', '').split('\n')[9:]
                     return True
 
-            except Exception as e:
-                print_line('File read exception {0}.'.format(e))
+            except Exception as common_exception:
+                print_line('File read exception {0}.'.format(common_exception))
                 return False
 
-        print_line('File {0} does not exists.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} with Windows packages does not exists.'.format(api_data['file']))
         return False
 
     def load_ubuntu_packages_from_shell(self, api_data):
@@ -648,6 +982,8 @@ class ComponentsHelper(object):
         :return: result
         """
 
+        # Define command for shell
+
         cmd = "dpkg -l | grep '^ii '"
 
         try:
@@ -655,25 +991,34 @@ class ComponentsHelper(object):
                     platform.system() == "linux" or \
                     platform.linux_distribution()[0] == 'debian':
 
-                proc = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                # Call shell with script
+
+                proc = subprocess.Popen(
+                    [cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, error = proc.communicate()
                 proc.kill()
 
                 if error:
-                    print_line('Shell command throw {0} code and {1} error message.'.format(proc.returncode, error.strip()))
+                    print_line('Shell command throw {0} code and {1} '
+                               'error message.'.format(proc.returncode, error.strip()))
                     return False
 
                 if output:
+                    # Normal response
                     api_data['packages'] = output.decode("utf-8")
                     return True
 
                 return False
 
+            # Otherwise
+
             print_line('Platform not defined as Debian.')
             return False
 
         except OSError as os_error:
-            print_line('Shell command throw errno: {0}, strerror: {1} and filename: {2}.'.format(os_error.errno, os_error.strerror, os_error.filename))
+            print_line('Shell command throw errno: {0}, strerror: {1} and '
+                       'filename: {2}.'.format(os_error.errno, os_error.strerror,
+                                               os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -687,25 +1032,28 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Defined file encoding
 
-            if enc == 'undefined':
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
             try:
-                with open(filename, 'r') as cf:
+                with open(api_data['file'], 'r') as file_descriptor:
 
-                    os_packages = cf.read()
+                    # Get file contents
+
+                    os_packages = file_descriptor.read()
 
                     if os_packages is None:
-                        print_line('Cant read file: {0}.'.format(filename))
+                        print_line('Cant read file: {0}.'.format(api_data['file']))
                         return False
 
+                    # Complete packages section in api data set
                     api_data['packages'] = os_packages
                     return True
 
@@ -713,7 +1061,7 @@ class ComponentsHelper(object):
                 print_line('File read exception {0}.'.format(e))
                 return False
 
-        print_line('File {0} does not exists.'.format(filename))
+        print_line('File {0} does not exists.'.format(api_data['file']))
         return False
 
     def load_fedora_packages_from_shell(self, api_data):
@@ -723,14 +1071,20 @@ class ComponentsHelper(object):
         :return: result
         """
 
+        # Define shell command
+
         cmd = "rpm -qa"
 
         try:
+            # Execute shell with command
+
             api_data['packages'] = os.popen(cmd).readlines()
             return True
 
         except OSError as os_error:
-            print_line('Shell command throw errno: {0}, strerror: {1} and filename: {2}.'.format(os_error.errno, os_error.strerror, os_error.filename))
+            print_line('Shell command throw errno: {0}, strerror: {1} and '
+                       'filename: {2}.'.format(os_error.errno, os_error.strerror,
+                                               os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -744,32 +1098,36 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define file encoding
 
-            if enc == 'undefined':
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
             try:
-                with open(filename, 'r') as cf:
-                    os_packages = cf.read()
+                with open(api_data['file'], 'r') as file_descriptor:
+
+                    # Get file contents
+
+                    os_packages = file_descriptor.read()
 
                     if os_packages is None:
-                        print_line('Cant read file: {0}.'.format(filename))
+                        print_line('Cant read file: {0}.'.format(api_data['file']))
                         return False
 
+                    # Complete packages section in api data set
                     api_data['packages'] = os_packages
                     return True
 
-            except Exception as e:
-                print_line('File read exception {0}.'.format(e))
+            except Exception as common_exception:
+                print_line('File read exception {0}.'.format(common_exception))
                 return False
 
-        print_line('File {0} does not exists.'.format(filename))
+        print_line('File {0} does not exists.'.format(api_data['file']))
         return False
 
     def load_macos_packages_from_shell(self, api_data):
@@ -779,26 +1137,36 @@ class ComponentsHelper(object):
         :return: result
         """
 
+        # Define shell command
+
         cmd = 'system_profiler -detailLevel full SPApplicationsDataType | grep "Location: /\| Version: "'
 
         try:
             if platform.system() == 'darwin' or platform.system() == 'Darwin':
+
+                # Execute shell with command
+
                 proc = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
                 output, error = proc.communicate()
                 proc.kill()
 
                 if error:
-                    print_line('Shell command throw {0} code and {1} error message.'.format(proc.returncode, error.strip()))
+                    print_line('Shell command throw {0} code and {1} error message.'.format(
+                        proc.returncode, error.strip()))
                     return False
 
                 if output:
-                    api_data['packages'] = output.decode("utf-8").replace(' ', '').replace(',', '.').split('\n')
+                    # Normal response
+                    api_data['packages'] = output.decode("utf-8")\
+                        .replace(' ', '').replace(',', '.').split('\n')
                     return True
 
                 return False
 
         except OSError as os_error:
-            print_line('Shell command throw errno: {0}, strerror: {1} and filename: {2}.'.format(os_error.errno, os_error.strerror, os_error.filename))
+            print_line('Shell command throw errno: {0}, strerror: {1} and '
+                       'filename: {2}.'.format(os_error.errno, os_error.strerror,
+                                               os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -812,24 +1180,29 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If file exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define file encoding
 
-            if enc == 'undefined':
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
             try:
-                with open(filename, 'r') as cf:
-                    os_packages = cf.read().replace(' ', '').replace(',', '.').split('\n')
+                with open(api_data['file'], 'r') as file_descriptor:
+
+                    # Get file contents
+
+                    os_packages = file_descriptor.read()\
+                        .replace(' ', '').replace(',', '.').split('\n')
 
                     if os_packages is None:
-                        print_line('Cant read file: {0}.'.format(filename))
+                        print_line('Cant read file: {0}.'.format(api_data['file']))
                         return False
 
+                    # Complete packages section in api data set
                     api_data['packages'] = os_packages
                     return True
 
@@ -837,37 +1210,51 @@ class ComponentsHelper(object):
                 print_line('File read exception {0}.'.format(e))
                 return False
 
-        print_line('File {0} does not exists.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} does not exists.'.format(api_data['file']))
         return False
 
     def load_pip_packages_from_shell_legacy(self, api_data):
         # type: (dict) -> bool
         """
-        Load Python PI packages with pip.FrozenRequirement method.
+        Load Python PIP packages with shell command.
+        :param api_data: api data set
         :return: result
         """
+
+        # Define what version of Python is used
+
         if api_data['target'] == 'pip':
             cmd = "pip list --format=legacy"
+
         elif api_data['target'] == 'pip3':
             cmd = "pip3 list --format=legacy"
 
         try:
+
+            # Execute shell with command
+
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
             output, error = proc.communicate()
+            proc.kill()
 
             if error:
                 print('Get Python PIP packages from shell error.')
                 return False
 
             if output:
+                # Normal response
                 if len(output) > 0:
                     api_data['packages'] = output.decode('utf-8')
                     return True
-                else:
-                    return False
+
+                print_line('Empty shell output with pip list command.')
+                return False
 
         except Exception as common_exception:
-            print("An exception {0} occured while shell command was called.".format(common_exception))
+            print("An exception {0} occured while shell command was called.".format(
+                common_exception))
             return False
 
     def load_pip_packages_from_path(self, api_data):
@@ -878,91 +1265,127 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename)
+            # Defined file encoding
 
-            if enc == 'undefined':
-                print_line('Undefined file {0} encoding.'.format(filename))
+            if self.define_file_encoding(api_data['file']) == 'undefined':
+                print_line('Undefined file {0} encoding.'.format(api_data['file']))
                 return False
 
             try:
-                with open(filename, 'r') as cf:
-                    rfp = cf.read()
+                with open(api_data['file'], 'r') as file_descriptor:
+                    rfp = file_descriptor.read()
+                    # Complete packages section in api data set
                     api_data['packages'] = rfp.replace(' ', '').split('\n')
                     return True
 
             except Exception as e:
-                print_line('Get an exception {0}, when read file {1}'.format(e, filename))
+                print_line('Get an exception {0}, when read file {1}'.format(e, api_data['file']))
                 return False
 
-        print_line('File {0} does not exists.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} does not exists.'.format(api_data['file']))
         return False
 
     def load_npm_packages_from_path(self, api_data):
         # type: (dict) -> bool
         """
         Load NPM packages from file, defined by path.
-        :param filename: path to file
+        :param api_data: api data set
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename)
+            # Define file encoding
 
-            if enc == 'undefined':
-                print_line('Undefined file {0} encoding.'.format(filename))
+            if self.define_file_encoding(api_data['file']) == 'undefined':
+                print_line('Undefined file {0} encoding.'.format(api_data['file']))
                 return False
 
             try:
-                with open(filename, 'r') as pf:
+
+                # Get file contents
+
+                with open(api_data['file'], 'r') as pf:
+
+                    # Parse packages
+
                     data = json.load(pf)
                     walkdict(data)
                     return True
 
-            except Exception as e:
-                print_line('File read exception: {0}'.format(e))
+            except Exception as common_exception:
+                print_line('File read exception: {0}'.format(common_exception))
                 return False
 
-        print_line('File {0} does not exist.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} does not exist.'.format(api_data['file']))
         return False
 
     def load_npm_packages(self, api_data, local):
-        path = api_data['file']
+        # type: (dict) -> bool
+        """
+        Load NPM packages from shell command.
+        :param api_data: api data set
+        :return: result
+        """
+
+        # Define path
+
         if local:
-            os.chdir(path)
+            os.chdir(api_data['file'])
         else:
             if api_data['os_type'] == OSs.WINDOWS:
                 os.chdir('c:\\')
             else:
                 os.chdir('/')
 
+        # Define command
+
         cmd = "npm list --json"
 
         if api_data['os_type'] == OSs.WINDOWS:
+
+            # For Windows powershell
+
             proc = subprocess.Popen(["powershell", cmd], stdout=subprocess.PIPE, shell=True)
             output, error = proc.communicate()
+
         elif api_data['os_type'] == OSs.MACOS or \
                 api_data['os_type'] == OSs.UBUNTU or \
                 api_data['os_type'] == OSs.DEBIAN or \
                 api_data['os_type'] == OSs.FEDORA:
-            proc = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # For other platforms, execute shell command
+
+            proc = subprocess.Popen(
+                [cmd], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             output, error = proc.communicate()
 
         if output:
+            # Normal response
             if output == '{}\n' or output == '{}':
                 raw_npm_components = []
                 return True
+
             else:
                 if isinstance(output, bytes):
+                    # If bytes format
                     data = json.loads(output.decode("utf-8"))
                 elif isinstance(output, str):
+                    # If string json format
                     data = json.loads(output)
+
+                # Parse packages
+
                 walkdict(data)
                 return True
 
@@ -976,23 +1399,27 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.exists(filename):
-            enc = self.define_file_encoding(filename=filename)
+        if os.path.exists(api_data['file']):
 
-            if enc == 'undefined':
-                print_line('Undefined file {0} encoding.'.format(filename))
+            # Define file encoding
+
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
+                print_line('Undefined file {0} encoding.'.format(api_data['file']))
                 return False
 
             try:
-                with open(filename, 'r') as pf:
-                    api_data['packages'] = json.load(pf)
+                with open(api_data['file'], 'r') as file_descriptor:
+                    api_data['packages'] = json.load(file_descriptor)
                     return True
 
-            except Exception as e:
-                print_line('File {0} read exception: {1}'.format(filename, e))
+            except Exception as common_exception:
+                print_line('File {0} read exception: '
+                           '{1}'.format(api_data['file'], common_exception))
                 return False
+
+        # Otherwise
 
         print_line('File does not exist.')
         return False
@@ -1005,29 +1432,37 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define file encoding
 
-            if enc == 'undefined':
-                print_line('Undefined file {0} encoding.'.format(filename))
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
+                print_line('Undefined file {0} encoding.'.format(api_data['file']))
                 return False
 
             try:
-                with open(filename, 'r') as pf:
+                with open(api_data['file'], 'r') as file_descriptor:
+
+                    # Get file contents
+
                     try:
-                        api_data['packages'] = json.load(pf)
+                        # Parse packages
+                        api_data['packages'] = json.load(file_descriptor)
                         return True
 
                     except json.JSONDecodeError as json_decode_error:
-                        print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
+                        print_line('An exception occured with json decoder: '
+                                   '{0}.'.format(json_decode_error))
                         return False
 
-            except Exception as e:
-                print_line('File {0} read exception: {1}'.format(filename, e))
+            except Exception as common_exception:
+                print_line('File {0} read exception: '
+                           '{1}'.format(api_data['file'], common_exception))
                 return False
+
+        # Otherwise
 
         print_line('File does not exist.')
         return False
@@ -1040,25 +1475,34 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.exists(filename):
+        if os.path.exists(api_data['file']):
 
-            enc = self.define_file_encoding(filename)
+            # Define file encoding
 
-            if enc == 'undefined':
-                print_line('Undefined file {0} encoding.'.format(filename))
+            if self.define_file_encoding(api_data['file']) == 'undefined':
+                print_line('Undefined file {0} encoding.'.format(api_data['file']))
                 return False
 
             try:
-                with open(filename, 'r') as pf:
-                    cont = pf.read().replace('default: ', '').replace(' ', '').replace(')', '')
+                with open(api_data['file'], 'r') as file_descriptor:
+
+                    # Get file contents
+
+                    cont = file_descriptor.read().replace('default: ', '').replace(' ', '').replace(')', '')
+
+                    # Complete packages section in api data set
+
                     api_data['packages'] = cont.split('\n')
                     return True
 
-            except Exception as e:
-                print_line('File {0} read exception: {1}'.format(filename, e))
+            except Exception as common_exception:
+                print_line('File {0} read exception: '
+                           '{1}'.format(api_data['file'], common_exception))
                 return False
+
+        # Otherwise
 
         print_line('File {0} does not exist.'.format(filename))
         return False

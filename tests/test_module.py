@@ -28,6 +28,7 @@ mypassword = login_data['password']
 
 myplatform = 'moduletest11'
 
+# simple data set for testing of main surepatch functions
 demo_set = [
     dict(
         team=myteam,

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Module for server access via web requests
+"""
+Module for server access via web requests.
 """
 
 import json
@@ -19,11 +20,17 @@ class WebAPI(object):
         Gecko/20100101 Firefox/45.0',
         'token': ''
     }
-    # -> for PROD
+    # This route for Production server
+
     base_url = "https://surepatch.com"
     api_url = '/api'
-    # -> for TEST
+
+    # This route for Testing Beta server
+
     # base_url = "https://beta.surepatch.net"
+
+    # URL block
+
     login_url = base_url + api_url + "/auth/login"
     login_token_url = base_url + api_url + "/auth/token/login"
     organization_url = base_url + api_url + "/organization"
@@ -31,14 +38,19 @@ class WebAPI(object):
     project_url = base_url + api_url + "/projects"
     issues_url = base_url + api_url + "/projects/partial"
     components_url = base_url + api_url + "/components"
+
+    # Payload templates block
+
     login_payload = dict(
         username=None,
         password=None,
         referalToken=None,
         organization=None)
+
     platform_payload = dict(
         name='',
         description='')
+
     project_payload = dict(
         platform_id='',
         parent=None,
@@ -49,12 +61,13 @@ class WebAPI(object):
         denied_if_unpaid=True,
         logo=None,
         components=[])
+
     components_payload = dict(
         set_name='0.0.0',
         components=[],
         project_url=None)
-    issues_payload = dict(
-    )
+
+    issues_payload = dict()
 
     def send_login_token_request(self, api_data):
         # type: (dict) -> bool
@@ -63,14 +76,22 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.login_payload['authToken'] = api_data['auth_token']
         self.login_payload['org_domain'] = api_data['team']
+
+        # Send request for login with auth token
+
         try:
             response = requests.post(
                 url=self.login_token_url,
                 headers=self.headers,
                 json=self.login_payload)
+
             if response.status_code == 200:
+                # Login success - response code 200
                 try:
                     text = response.text
                     login_response_text = json.loads(text)
@@ -80,20 +101,28 @@ class WebAPI(object):
                     api_data['organization'] = None
                     print_line('Login success.')
                     return True
+
                 except ValueError as json_value_exception:
                     print_line('Response JSON parsing exception: {0}'.format(json_value_exception))
                     return False
+
+            # Otherwise
+
             print_line('Login failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -106,19 +135,29 @@ class WebAPI(object):
         :return: result
         """
 
+        # Complete payload
+
         self.login_payload['username'] = api_data['user']
         self.login_payload['password'] = api_data['password']
         self.login_payload['referalToken'] = None
         self.login_payload['organization'] = api_data['team']
+
+        # Send request for login with auth team/user/password
+
         try:
             response = requests.post(
                 url=self.login_url,
                 headers=self.headers,
                 json=self.login_payload)
+
             if response.status_code == 200:
+                # Login success - response code 200
                 try:
                     text = response.text
                     login_response_text = json.loads(text)
+
+                    # Get session token from response
+
                     if 'token' in login_response_text:
                         api_data['token'] = login_response_text['token']
                     else:
@@ -130,31 +169,46 @@ class WebAPI(object):
                         print_line('For successfull login in this case, use auth token '
                                    'in parameters or config file.')
                         return False
+
+                    # Get user ID from response
+
                     if 'userID' in login_response_text:
                         api_data['user_id'] = login_response_text['userID']
                     else:
                         api_data['user_id'] = None
+
+                    # Get organization ID from response
+
                     if 'orgID' in login_response_text:
                         api_data['org_id'] = login_response_text['orgID']
                     else:
                         api_data['org_id'] = None
+
                     api_data['organization'] = None
                     print_line('Login success.')
                     return True
+
                 except ValueError as json_value_exception:
                     print_line('Response JSON parsing exception: {0}'.format(json_value_exception))
                     return False
+
+            # Otherwise
+
             print_line('Login failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -166,15 +220,26 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
+
+        # Send request to get the organization parameters
+
         try:
             response = requests.get(
                 url=self.organization_url,
                 headers=self.headers)
+
             if response.status_code == 200:
+                # Request success - response code 200
                 try:
                     text = response.text
                     organization_data = json.loads(text)[0]
+
+                    # Complete organization structure in data set
+
                     api_data['organization'] = dict(
                         id=organization_data['_id'],
                         name=organization_data['name'],
@@ -203,6 +268,7 @@ class WebAPI(object):
                         team_plan_id=organization_data['team_plan_id'],
                         all_projects=organization_data['allProjects'],
                         platforms=[])
+
                     for platform_data in organization_data['platforms']:
                         platform = dict(
                             id=platform_data['_id'],
@@ -211,6 +277,7 @@ class WebAPI(object):
                             url=platform_data['url'],
                             version=platform_data['__v'],
                             projects=[])
+
                         for project_data in platform_data['projects']:
                             project = dict(
                                 id=project_data['_id'],
@@ -228,20 +295,28 @@ class WebAPI(object):
                             platform['projects'].append(project)
                         api_data['organization']['platforms'].append(platform)
                     return True
+
                 except ValueError as json_value_exception:
                     print_line('Response JSON parsing exception: {0}'.format(json_value_exception))
                     return False
+
+            # Otherwise
+
             print_line('Get organization parameters failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -253,27 +328,41 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
         self.platform_payload['name'] = api_data['platform']
         self.platform_payload['description'] = api_data['description']
+
         try:
             response = requests.post(
                 url=self.platform_url,
                 headers=self.headers,
                 json=self.platform_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Platform {0} was created successfully.'.format(api_data['platform']))
                 return True
+
+            # Otherwise
+
             print_line('Create platform failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -285,28 +374,42 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
         self.project_payload['name'] = api_data['project']
         self.project_payload['platform_id'] = self.get_platform_id_by_name(api_data=api_data)
         self.project_payload['components'] = api_data['components']
+
         try:
             response = requests.post(
                 url=self.project_url,
                 headers=self.headers,
                 json=self.project_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Project {0} was created successfully.'.format(api_data['project']))
                 return True
+
+            # Otherwise
+
             print_line('Create project failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -318,28 +421,42 @@ class WebAPI(object):
         :param api_data: api data set
         :return:
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
         self.components_payload['set_name'] = api_data['set']
         self.components_payload['project_url'] = api_data['project_url']
         self.components_payload['components'] = api_data['components']
+
         try:
             response = requests.post(
                 url=self.components_url,
                 headers=self.headers,
                 json=self.components_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Component set {0} was created successfully.'.format(api_data['set']))
                 return True
+
+            # Otherwise
+
             print_line('Create component set failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -351,25 +468,38 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
         self.headers['token'] = api_data['token']
+
         try:
             response = requests.delete(
                 url=self.platform_url + '/' + str(api_data['platform_id']),
                 headers=self.headers,
                 json=self.platform_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Platform {0} was deleted successfully.'.format(api_data['platform']))
                 return True
+
+            # Otherwise
+
             print_line('Delete Platform failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -381,25 +511,39 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
+
         try:
             response = requests.delete(
                 url=self.project_url + '/' + str(api_data['project_id']),
                 headers=self.headers,
                 json=self.project_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Project {0} was deleted successfully.'.format(api_data['project']))
                 return True
+
+            # Otherwise
+
             print_line('Delete Project failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -411,6 +555,9 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
         self.platform_payload = dict(
             newPlatform=dict(
@@ -419,29 +566,36 @@ class WebAPI(object):
                 options=dict(
                     updated=datetime.datetime.now().isoformat() + 'Z',
                     state='archive',
-                    archivedBy=api_data['user']
-                )
-            )
-        )
+                    archivedBy=api_data['user'])))
+
         try:
             response = requests.put(
                 url=self.platform_url,
                 headers=self.headers,
-                json=self.platform_payload
-            )
+                json=self.platform_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Platform {0} was archived successfully.'.format(api_data['platform']))
                 return True
+
+            # Otherwise
+
             print_line('Archive Platform failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -453,36 +607,44 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
         self.headers['token'] = api_data['token']
         self.project_payload['options'] = dict(
             newProject=dict(
                 id=api_data['project_id'],
                 url=api_data['project_url'],
-                options = dict(
+                options=dict(
                     updated=datetime.datetime.now().isoformat() + 'Z',
                     state='archive',
-                    archivedBy=api_data['user']
-                )
-            )
-        )
+                    archivedBy=api_data['user'])))
+
         try:
             response = requests.put(
                 url=self.project_url,
                 headers=self.headers,
                 json=self.project_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Project {0} was archived successfully.'.format(api_data['project']))
                 return True
+
             print_line('Archive Project failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -494,6 +656,9 @@ class WebAPI(object):
         :param api_data:
         :return:
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
         self.platform_payload = dict(
             newPlatform=dict(
@@ -502,28 +667,36 @@ class WebAPI(object):
                 options=dict(
                     updated=datetime.datetime.now().isoformat() + 'Z',
                     state='open',
-                    archived=None
-                )
-            )
-        )
+                    archived=None)))
+
         try:
             response = requests.put(
                 url=self.platform_url,
                 headers=self.headers,
                 json=self.platform_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Platform {0} was restored successfully.'.format(api_data['platform']))
                 return True
-            print_line('Archive Platform failed. Status code: {0}'.format(response.status_code))
+
+            # Otherwise
+
+            print_line('Restore Platform failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -535,6 +708,9 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
         self.project_payload = dict(
             newProject=dict(
@@ -543,28 +719,34 @@ class WebAPI(object):
                 options=dict(
                     updated=datetime.datetime.now().isoformat() + 'Z',
                     state='open',
-                    archived=None
-                )
-            )
-        )
+                    archived=None)))
+
         try:
             response = requests.put(
                 url=self.project_url,
                 headers=self.headers,
                 json=self.project_payload)
+
             if response.status_code == 200:
+                # Request success - response code 200
+                print_line('Project {0} was restored successfully.'.format(api_data['project']))
                 return True
-            print_line('Archive Platform failed. Status code: {0}'.format(response.status_code))
+
+            print_line('Restore Project failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -576,32 +758,47 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
+
         try:
             response = requests.get(
                 url=self.platform_url + '/archive/' + api_data['organization']['id'],
                 headers=self.headers,
                 json=self.platform_payload)
+
             api_data['archive_platforms'] = None
+
             if response.status_code == 200:
+                # Request success - response code 200
                 try:
                     text = response.text
                     api_data['archive_platforms'] = json.loads(text)
+                    return True
+
                 except json.JSONDecodeError as json_decode_error:
                     print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
                     return False
-                return True
+
+            # Otherwise
+
             print_line('Archive Platform get information failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -613,32 +810,47 @@ class WebAPI(object):
         :param api_data: api data set
         :return: result, modify api_data
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
+
         try:
             response = requests.get(
                 url=self.project_url + '/archive/' + api_data['organization']['id'],
                 headers=self.headers,
                 json=self.project_payload)
+
             api_data['archive_projects'] = None
+
             if response.status_code == 200:
+                # Request success - response code 200
                 try:
                     text = response.text
                     api_data['archive_projects'] = json.loads(text)
+                    return True
+
                 except json.JSONDecodeError as json_decode_error:
                     print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
                     return False
-                return True
+
+            # Otherwise
+
             print_line('Archive Project get information failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False
@@ -650,32 +862,47 @@ class WebAPI(object):
         :param api_data:
         :return:
         """
+
+        # Complete payload
+
         self.headers['token'] = api_data['token']
+
         try:
             response = requests.post(
                 url=self.issues_url + '/' + api_data['project_url'],
                 headers=self.headers,
                 json=self.issues_payload)
+
             api_data['archive_projects'] = None
+
             if response.status_code == 200:
+                # Request success - response code 200
                 try:
                     content = response.content.decode("utf-8")
                     api_data['issues'] = json.loads(content)['project']['issues']
                     return True
+
                 except json.JSONDecodeError as json_decode_error:
                     print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
                     return False
+
+            # Otherwise
+
             print_line('Archive Project get information failed. Status code: {0}'.format(response.status_code))
             return False
+
         except requests.exceptions.HTTPError as http_exception:
             print_line('HTTP Error: {0}'.format(http_exception))
             return False
+
         except requests.exceptions.ConnectionError as connection_exception:
             print_line('Connection error: {0}'.format(connection_exception))
             return False
+
         except requests.exceptions.Timeout as timeout_exception:
             print_line('Connection timeout: {0}'.format(timeout_exception))
             return False
+
         except requests.exceptions.RequestException as request_exception:
             print_line('Request exception: {0}'.format(request_exception))
             return False

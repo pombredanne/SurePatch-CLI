@@ -154,6 +154,9 @@ def main():
     """
 
     arguments = create_parser()
+
+    # Collect app command line parameters into data set
+
     api_data = dict(
         action=arguments.action,
         team=arguments.team,
@@ -181,6 +184,8 @@ def main():
     if arguments.logo is not None:
         if arguments.logo == 'on':
             print_logo()
+
+    # Run application with data set
 
     if surepatch_api.run_action(api_data=api_data):
         print_line('Complete successfully.')

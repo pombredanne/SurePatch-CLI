@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Main CLI App API module.
+"""
+
 
 import os
 import yaml
@@ -17,7 +21,8 @@ from core.os_parameters import get_os_release
 from core.os_parameters import get_os_machine
 
 class API(object):
-    """Main CLI App API.
+    """
+    Main CLI App API class.
     """
 
     def __init__(self):
@@ -29,37 +34,57 @@ class API(object):
 
     def run_action(self, api_data):
         """
-        Main routing method for app actions.
+        Main routing method for CLI app actions.
         :param api_data: api data set
         :return: result, modify api_data
         """
 
-        if not self.validator_for_api_data_structure(api_data=api_data):
+        # Validate api data set structure
+
+        if not self.validate_api_data_structure_is_ok(api_data=api_data):
             return False
 
-        if not self.validator_for_action_type(api_data=api_data):
+        # Validate actions
+
+        if not self.validate_action_type_is_ok(api_data=api_data):
             return False
+
+        # Action: save config into file and exit
 
         if api_data['action'] == Actions.SAVE_CONFIG:
             return self.save_config_to_file(api_data=api_data)
 
+        # Select login method for current session
+
         if not self.select_login_method(api_data=api_data):
             return False
+
+        # Action: Login into server
 
         if not self.action_login_server_success(api_data=api_data):
             return False
 
+        # If login was successfull - get organization parameters from server
+
         if not self.get_organization_parameters_from_server(api_data=api_data):
             return False
+
+        # Action: Create new Platform
 
         if api_data['action'] == Actions.CREATE_PLATFORM:
             return self.action_create_new_platform(api_data=api_data)
 
+        # Action: Create new Project
+
         elif api_data['action'] == Actions.CREATE_PROJECT:
             return self.action_create_new_project(api_data=api_data)
 
+        # Action: Create new Component Set
+
         elif api_data['action'] == Actions.CREATE_SET:
             return self.action_create_new_set(api_data=api_data)
+
+        # Action: Show information about Platforms, Projects, Component Set or Issues
 
         elif api_data['action'] == Actions.SHOW_PLATFORMS or \
                 api_data['action'] == Actions.SHOW_PROJECTS or \
@@ -67,23 +92,37 @@ class API(object):
                 api_data['action'] == Actions.SHOW_ISSUES:
             return self.action_show_platforms_projects_or_sets(api_data=api_data)
 
+        # Action: Delete Platform
+
         elif api_data['action'] == Actions.DELETE_PLATFORM:
             return self.action_delete_platform(api_data=api_data)
+
+        # Action: Delete Project
 
         elif api_data['action'] == Actions.DELETE_PROJECT:
             return self.action_delete_project(api_data=api_data)
 
+        # Action: Archive Platform
+
         elif api_data['action'] == Actions.ARCHIVE_PLATFORM:
             return self.action_archive_platform(api_data=api_data)
+
+        # Action: Archive Project
 
         elif api_data['action'] == Actions.ARCHIVE_PROJECT:
             return self.action_archive_project(api_data=api_data)
 
+        # Action: Restore Platform
+
         elif api_data['action'] == Actions.RESTORE_PLATFORM:
             return self.action_restore_platform(api_data=api_data)
 
+        # Action: Restore Project
+
         elif api_data['action'] == Actions.RESTORE_PROJECT:
             return self.action_restore_project(api_data=api_data)
+
+        # Otherwise
 
         print_line("Unknown action code: {0}.".format(api_data['action']))
         return False
@@ -94,11 +133,23 @@ class API(object):
 
     def select_login_method(self, api_data):
         # type: (dict) -> bool
+        """
+        Select login method for current session.
+        :param api_data: api data set
+        :return: result, modify api_data
+        """
+
+        # If auth_token or user/password presents in command line
+
         if api_data['login_method'] == 'token' or api_data['login_method'] == 'username_and_password':
             if api_data['team'] is None or api_data['team'] == '':
                 print_line('Token authorization requires --team parameter.')
                 return False
+
             return True
+
+        # If login will be with data from config file
+
         elif api_data['login_method'] == 'config_file':
             if self.load_config_from_file(api_data=api_data):
                 if api_data['auth_token'] is not None and api_data['auth_token'] != '':
@@ -106,6 +157,9 @@ class API(object):
                 else:
                     api_data['login_method'] = 'username_and_password'
                 return True
+
+        # Otherwise
+
         return False
 
     def action_login_server_success(self, api_data):
@@ -114,10 +168,20 @@ class API(object):
         :param api_data: api data set
         :return: result, modify api_data
         """
+
+        # If login method is auth_token
+
         if api_data['login_method'] == 'token':
             return self.web_api.send_login_token_request(api_data=api_data)
+
+        # If login method is user/password
+
         elif api_data['login_method'] == 'username_and_password':
             return self.web_api.send_login_user_password_request(api_data=api_data)
+
+        # Otherwise
+
+        return False
 
     # -------------------------------------------------------------------------
     # GET ORGANIZATION PARAMETERS
@@ -144,10 +208,15 @@ class API(object):
         :param api_data: api data set
         :return: result, modify api_data
         """
+
         platform_helper = PlatformHelper()
+
+        # Validate Platform parameters
 
         if not platform_helper.create_platform_validate(api_data=api_data):
             return False
+
+        # Create new Platform
 
         return platform_helper.create_platform(api_data=api_data)
 
@@ -161,7 +230,10 @@ class API(object):
         :param api_data: api data set
         :return: result, modify api_data
         """
+
         project_helper = ProjectHelper()
+
+        # Validate Project parameters
 
         if not project_helper.create_project_validate(api_data=api_data):
             return False
@@ -178,6 +250,7 @@ class API(object):
             api_data['file'] = files[i]
 
             # Create new project with OS packages {from shell request}
+
             if api_data['target'] == Targets.OS and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -186,6 +259,7 @@ class API(object):
                     return False
 
             # Create new project with OS packages from shell request unloading file {from path}
+
             if api_data['target'] == Targets.OS and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -193,13 +267,16 @@ class API(object):
                 if not project_helper.collect_data_for_project_os_auto_system_path(api_data=api_data):
                     return False
 
-            # Create new project with PIP packages {from shell request}
+            # Create new project with Python 2 PIP packages {from shell request}
+
             if api_data['target'] == Targets.PIP and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
                     api_data['file'] is None:
                 if not project_helper.collect_data_for_project_pip_auto_system_none(api_data=api_data):
                     return False
+
+            # Create new project with Python 3 PIP packages {from shell request}
 
             if api_data['target'] == Targets.PIP3 and \
                     api_data['method'] == Methods.AUTO and \
@@ -208,13 +285,16 @@ class API(object):
                 if not project_helper.collect_data_for_project_pip_auto_system_none(api_data=api_data):
                     return False
 
-            # Create new project with PIP from file {from path}
+            # Create new project with Python 2 PIP from file {from path}
+
             if api_data['target'] == Targets.PIP and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
                     api_data['file'] is not None:
                 if not project_helper.collect_data_for_data_for_project_pip_auto_system_path(api_data=api_data):
                     return False
+
+            # Create new project with Python 3 PIP from file {from path}
 
             if api_data['target'] == Targets.PIP3 and \
                     api_data['method'] == Methods.AUTO and \
@@ -223,13 +303,15 @@ class API(object):
                 if not project_helper.collect_data_for_data_for_project_pip_auto_system_path(api_data=api_data):
                     return False
 
-            # Create new project with PIP requirements.txt {from path}
+            # Create new project with Python 2 PIP from requirements.txt {from path}
             if api_data['target'] == Targets.REQ and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
                     api_data['file'] is not None:
                 if not project_helper.collect_data_for_project_requirements_auto_system_path(api_data=api_data):
                     return False
+
+            # Create new project with Python 3 PIP from requirements.txt {from path}
 
             if api_data['target'] == Targets.REQ3 and \
                     api_data['method'] == Methods.AUTO and \
@@ -238,12 +320,16 @@ class API(object):
                 if not project_helper.collect_data_for_project_requirements_auto_system_path(api_data=api_data):
                     return False
 
+            # Create new project with Python 2 PIP from requirements.txt {from path}
+
             if api_data['target'] == Targets.REQUIREMENTS and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
                     api_data['file'] is not None:
                 if not project_helper.collect_data_for_project_requirements_auto_system_path(api_data=api_data):
                     return False
+
+            # Create new project with Python 3 PIP from requirements.txt {from path}
 
             if api_data['target'] == Targets.REQUIREMENTS3 and \
                     api_data['method'] == Methods.AUTO and \
@@ -252,7 +338,8 @@ class API(object):
                 if not project_helper.collect_data_for_project_requirements_auto_system_path(api_data=api_data):
                     return False
 
-            # Create new project with NPM packages {from shell request} - global
+            # Create new project with NPM packages {from shell request} - from root path
+
             if api_data['target'] == Targets.NPM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -260,7 +347,8 @@ class API(object):
                 if not project_helper.collect_data_for_project_npm_auto_system_none(api_data=api_data):
                     return False
 
-            # Create new project with NPM packages {from shell request} - local
+            # Create new project with NPM packages {from shell request} - from local path
+
             if api_data['target'] == Targets.NPM_LOCAL and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -268,7 +356,8 @@ class API(object):
                 if not project_helper.collect_data_for_project_npm_local_auto_system_none(api_data=api_data):
                     return False
 
-            # Create new project with NPM packages {from file}
+            # Create new project with NPM packages {from path}
+
             if api_data['target'] == Targets.NPM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -277,6 +366,7 @@ class API(object):
                     return False
 
             # Create new project with NPM package.json file {from path}
+
             if api_data['target'] == Targets.PACKAGE_JSON and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -285,6 +375,7 @@ class API(object):
                     return False
 
             # Create new project with NPM package_lock.json file {from path}
+
             if api_data['target'] == Targets.PACKAGE_LOCK_JSON and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -293,6 +384,7 @@ class API(object):
                     return False
 
             # Create new project with GEM packages {from shell request}
+
             if api_data['target'] == Targets.GEM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -301,6 +393,7 @@ class API(object):
                     return False
 
             # Create new project with GEM packages from shell request unloading file {from path}
+
             if api_data['target'] == Targets.GEM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -309,6 +402,7 @@ class API(object):
                     return False
 
             # Create new project with GEMFILE file {from path}
+
             if api_data['target'] == Targets.GEMFILE and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -317,6 +411,7 @@ class API(object):
                     return False
 
             # Create new project with GEMFILE.lock file {from path}
+
             if api_data['target'] == Targets.GEMFILE_LOCK and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -325,6 +420,7 @@ class API(object):
                     return False
 
             # Create new project from user format file {from path}
+
             if api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.USER and \
                     api_data['file'] is not None:
@@ -332,6 +428,7 @@ class API(object):
                     return False
 
             # Create new project from interactive mode
+
             if api_data['method'] == Methods.MANUAL and \
                     api_data['format'] == Formats.USER and \
                     api_data['file'] is None:
@@ -339,6 +436,7 @@ class API(object):
                     return False
 
             # Create project with PHP Composer.json file {from path}
+
             if api_data['target'] == Targets.PHP_COMPOSER_JSON and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -347,6 +445,7 @@ class API(object):
                     return False
 
             # Create project with PHP Composer.lock file {from path}
+
             if api_data['target'] == Targets.PHP_COMPOSER_LOCK and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -355,6 +454,7 @@ class API(object):
                     return False
 
             # Create project with Maven pom.xml file {from path}
+
             if api_data['target'] == Targets.POM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -363,6 +463,7 @@ class API(object):
                     return False
 
             # Create project with yarn.lock file {from path}
+
             if api_data['target'] == Targets.YARN and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -370,11 +471,15 @@ class API(object):
                 if not project_helper.collect_data_for_project_yarn_lock_system_path(api_data=api_data):
                     return False
 
+        # If there are some collected components
+
         if len(api_data['components']) > 0:
             return self.web_api.send_create_new_project_request(api_data=api_data)
 
+        # Otherwise
+
         print_line('Something wrong with app parameters or components list is empty. Please, look through README.md')
-        return True
+        return False
 
     # -------------------------------------------------------------------------
     # SET
@@ -389,11 +494,15 @@ class API(object):
 
         set_helper = SetHelper()
 
+        # Validate new Component Set parameters
+
         if not set_helper.create_set_validate(api_data=api_data):
             return False
 
         targets = api_data['target']
         files = api_data['file']
+
+        # For list of targets
 
         for i in range(0, len(targets)):
 
@@ -401,6 +510,7 @@ class API(object):
             api_data['file'] = files[i]
 
             # Create new set with OS packages {from shell request}
+
             if api_data['target'] == Targets.OS and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -409,6 +519,7 @@ class API(object):
                     return False
 
             # Create set with OS packages from shell request unloading file {from path}
+
             if api_data['target'] == Targets.OS and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -416,13 +527,16 @@ class API(object):
                 if not set_helper.collect_data_for_set_os_auto_system_path(api_data=api_data):
                     return False
 
-            # Create set with PIP packages {from shell request}
+            # Create set with Python 2 PIP packages {from shell request}
+
             if api_data['target'] == Targets.PIP and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
                     api_data['file'] is None:
                 if not set_helper.collect_data_for_set_pip_auto_system_none(api_data=api_data):
                     return False
+
+            # Create set with Python 3 PIP packages {from shell request}
 
             if api_data['target'] == Targets.PIP3 and \
                     api_data['method'] == Methods.AUTO and \
@@ -431,13 +545,16 @@ class API(object):
                 if not set_helper.collect_data_for_set_pip_auto_system_none(api_data=api_data):
                     return False
 
-            # Create set with PIP from file {from path}
+            # Create set with Python 2 PIP from file {from path}
+
             if api_data['target'] == Targets.PIP and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
                     api_data['file'] is not None:
                 if not set_helper.collect_data_for_set_pip_auto_system_path(api_data=api_data):
                     return False
+
+            # Create set with Python 3 PIP from file {from path}
 
             if api_data['target'] == Targets.PIP3 and \
                     api_data['method'] == Methods.AUTO and \
@@ -447,6 +564,7 @@ class API(object):
                     return False
 
             # Create set with PIP requirements.txt {from path}
+
             if api_data['target'] == Targets.REQ and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -455,6 +573,7 @@ class API(object):
                     return False
 
             # Create set with requirements pip3
+
             if api_data['target'] == Targets.REQ3 and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -463,6 +582,7 @@ class API(object):
                     return False
 
             # Create set from requirements file
+
             if api_data['target'] == Targets.REQUIREMENTS and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -471,6 +591,7 @@ class API(object):
                     return False
 
             # Create set from requirements pip3 file
+
             if api_data['target'] == Targets.REQUIREMENTS3 and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -479,6 +600,7 @@ class API(object):
                     return False
 
             # Create set with NPM packages {from shell request} - global
+
             if api_data['target'] == Targets.NPM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -487,6 +609,7 @@ class API(object):
                     return False
 
             # Create set with NPM packages {from shell request} - local
+
             if api_data['target'] == Targets.NPM_LOCAL and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -495,6 +618,7 @@ class API(object):
                     return False
 
             # Create set with NPM packages {from file}
+
             if api_data['target'] == Targets.NPM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -503,6 +627,7 @@ class API(object):
                     return False
 
             # Create set with NPM package.json file {from path}
+
             if api_data['target'] == Targets.PACKAGE_JSON and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -511,6 +636,7 @@ class API(object):
                     return False
 
             # Create set with NPM package_lock.json file {from path}
+
             if api_data['target'] == Targets.PACKAGE_LOCK_JSON and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -519,6 +645,7 @@ class API(object):
                     return False
 
             # Create set with GEM packages {from shell request}
+
             if api_data['target'] == Targets.GEM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -527,6 +654,7 @@ class API(object):
                     return False
 
             # Create set with GEM packages from shell request unloading file {from path}
+
             if api_data['target'] == Targets.GEM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -535,6 +663,7 @@ class API(object):
                     return False
 
             # Create set with GEMLIST file {from path}
+
             if api_data['target'] == Targets.GEMFILE and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -543,6 +672,7 @@ class API(object):
                     return False
 
             # Create set with GEMLIST file {from path}
+
             if api_data['target'] == Targets.GEMFILE_LOCK and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -551,6 +681,7 @@ class API(object):
                     return False
 
             # Create set with User defined packages in file (from path{
+
             if api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.USER and \
                     api_data['file'] is not None:
@@ -558,6 +689,7 @@ class API(object):
                     return False
 
             # Create set with User defined packages in interactive mode
+
             if api_data['method'] == Methods.MANUAL and \
                     api_data['format'] == Formats.USER and \
                     api_data['file'] is None:
@@ -565,6 +697,7 @@ class API(object):
                     return False
 
             # Create set with PHP Composer.json file {from path}
+
             if api_data['target'] == Targets.PHP_COMPOSER_JSON and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -572,6 +705,7 @@ class API(object):
                 return set_helper.collect_data_for_set_php_composer_json_system_path(api_data=api_data)
 
             # Create set with PHP Composer.lock file {from path}
+
             if api_data['target'] == Targets.PHP_COMPOSER_LOCK and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -580,6 +714,7 @@ class API(object):
                     return False
 
             # Create set with pom.xml
+
             if api_data['target'] == Targets.POM and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -588,6 +723,7 @@ class API(object):
                     return False
 
             # Create set with yarn.lock file {from path}
+
             if api_data['target'] == Targets.YARN and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -595,8 +731,12 @@ class API(object):
                 if not set_helper.collect_data_for_set_yarn_lock_system_path(api_data=api_data):
                     return False
 
+        # If there are some components
+
         if len(api_data['components']) > 0:
             return self.web_api.send_create_new_component_set_request(api_data=api_data)
+
+        # Otherwise
 
         print_line('Something wrong with app parameters. Please, look through README.md')
         return False
@@ -611,10 +751,15 @@ class API(object):
         :param api_data: api data set
         :return: result
         """
+
         show_helper = ShowHelper()
+
+        # If action is Show Platforms
 
         if api_data['action'] == Actions.SHOW_PLATFORMS:
             return show_helper.action_show_platforms(api_data=api_data)
+
+        # If action is Show Projects
 
         elif api_data['action'] == Actions.SHOW_PROJECTS:
             if api_data['platform'] is None or \
@@ -622,13 +767,21 @@ class API(object):
                 print_line('Empty platform name.')
                 return False
 
+            # Get number of Platform in list of Platforms
+
             platform_number = self.web_api.get_platform_number_by_name(api_data=api_data)
+
+            # It there are not such Platform in list of Platforms
 
             if platform_number == -1:
                 print_line("No such platform: {0}.".format(api_data['platform']))
                 return False
 
+            # It is OK, so run action
+
             return show_helper.action_show_projects(api_data=api_data)
+
+        # If action if Show current Component Set
 
         elif api_data['action'] == Actions.SHOW_SET:
             if api_data['platform'] is None or \
@@ -636,24 +789,38 @@ class API(object):
                 print_line('Empty platform name.')
                 return False
 
+            # Get number of Platform in list of Platforms
+
             platform_number = self.web_api.get_platform_number_by_name(api_data=api_data)
+
+            # It there are not such Platform in list of Platforms
 
             if platform_number == -1:
                 print_line("No such platform: {0}.".format(api_data['platform']))
                 return False
+
+            # If Project name is empty
 
             if api_data['project'] is None or \
                     api_data['project'] == '':
                 print_line('Empty project name.')
                 return False
 
+            # Get number of Project in list of Projects
+
             project_number = self.web_api.get_project_number_by_name(api_data=api_data)
+
+            # If there are not such Project in list of Projects
 
             if project_number == -1:
                 print_line("No such project {0} in platform {1}.".format(api_data['project'], api_data['platform']))
                 return False
 
+            # It is OK, so run action
+
             return show_helper.action_show_set(api_data=api_data)
+
+        # If action is Show Issues
 
         elif api_data['action'] == Actions.SHOW_ISSUES:
             if api_data['platform'] is None or \
@@ -661,22 +828,34 @@ class API(object):
                 print_line('Empty platform name.')
                 return False
 
+             # Get number of Platform in list of Platforms
+
             platform_number = self.web_api.get_platform_number_by_name(api_data=api_data)
+
+            # It there are not such Platform in list of Platforms
 
             if platform_number == -1:
                 print_line("No such platform: {0}.".format(api_data['platform']))
                 return False
+
+            # If Project name is empty
 
             if api_data['project'] is None or \
                     api_data['project'] == '':
                 print_line('Empty platform name.')
                 return False
 
+            # Get number of Project in list of Projects
+
             project_number = self.web_api.get_project_number_by_name(api_data=api_data)
+
+            # If there are not such Project in list of Projects
 
             if project_number == -1:
                 print_line("No such project {0} in platform {1}.".format(api_data['project'], api_data['platform']))
                 return False
+
+            # It is OK, so run action
 
             return show_helper.action_show_issues(api_data=api_data)
 
@@ -693,6 +872,7 @@ class API(object):
         :param api_data: api data set
         :return: result
         """
+
         platform_helper = PlatformHelper()
 
         return platform_helper.delete_platform(api_data=api_data)
@@ -765,7 +945,7 @@ class API(object):
     # -------------------------------------------------------------------------
 
     @staticmethod
-    def validator_for_api_data_structure(api_data):
+    def validate_api_data_structure_is_ok(api_data):
         # type: (dict) -> bool
         """
         Validate api_data contents.
@@ -773,32 +953,41 @@ class API(object):
         :return: result
         """
 
-        # If app execute as python module
+        # If app execute as python module - redefine OS parameteres
+
         if 'os_type' not in api_data:
             api_data['os_type'] = get_os_platform()
+
         if 'os_version' not in api_data:
             api_data['os_version'] = get_os_version(get_os_platform())
+
         if 'os_sp' not in api_data:
             api_data['os_sp'] = get_os_sp(get_os_platform())
+
         if 'os_release' not in api_data:
             api_data['os_release'] = get_os_release()
+
         if 'os_machine' not in api_data:
             api_data['os_machine'] = get_os_machine()
 
         # For login mode
+
         if 'auth_token' not in api_data:
             api_data['auth_token'] = None
 
         if api_data['auth_token'] is not None and api_data['auth_token'] != '':
             api_data['login_method'] = 'token'
+
         else:
             if (api_data['user'] is not None and api_data['user'] != '') and \
                     api_data['password'] is not None and api_data['password'] != '':
                 api_data['login_method'] = 'username_and_password'
+
             else:
                 api_data['login_method'] = 'config_file'
 
         # For targets
+
         if 'target' not in api_data:
             api_data['target'] = None
 
@@ -806,6 +995,7 @@ class API(object):
             api_data['target'] = ''
 
         # For files
+
         if 'file' not in api_data:
             api_data['file'] = None
 
@@ -813,6 +1003,7 @@ class API(object):
             api_data['file'] = 'no'
 
         # For methods
+
         if 'method' not in api_data:
             api_data['method'] = None
 
@@ -820,22 +1011,33 @@ class API(object):
             api_data['method'] = Methods.AUTO
 
         # For formats
+
         if 'format' not in api_data:
             api_data['format'] = None
 
         if api_data['format'] is None:
             api_data['format'] = Formats.SYSTEM
 
+        # For logging
+
+        if 'logging' not in api_data:
+            api_data['logging'] = None
+
+        if api_data['logging'] is None:
+            api_data['logging'] = 'off'
+
         # Define if targets more than one
+
         targets = api_data['target'].replace('[', '').replace(']', '').replace(' ', '').split(',')
 
         if len(targets) == 0:
             print_line('Wrong number of targets.')
-            return 1
+            return False
 
         api_data['target'] = targets
 
         # Define if files more than one, if it is true - redefine files as list with length of targets
+
         files = api_data['file'].replace('[', '').replace(']', '').replace(' ', '').split(',')
 
         if len(targets) != len(files):
@@ -843,7 +1045,7 @@ class API(object):
                        'that do not require files - use "no".')
             print_line('For example: ... --target[os,req] '
                        '--file=no,/home/user/project/requirements.txt.')
-            return 1
+            return False
 
         api_data['file'] = []
 
@@ -853,13 +1055,15 @@ class API(object):
             else:
                 api_data['file'].append(file)
 
+        # Clear components and packages lists
+
         api_data['components'] = []
         api_data['packages'] = []
 
         return True
 
     @staticmethod
-    def validator_for_action_type(api_data):
+    def validate_action_type_is_ok(api_data):
         """
         Check if action type, pointed in arguments match with template.
         :param api_data: api data set
@@ -899,9 +1103,13 @@ class API(object):
         :return: result
         """
 
+        # Default parameters for config file
+
         file_name = '.surepatch.yaml'
         file_path = os.path.expanduser('~')
         full_path = os.path.join(file_path, file_name)
+
+        # Config template
 
         config = dict(
             team=api_data['team'],
@@ -911,6 +1119,8 @@ class API(object):
             logo=api_data['logo'],
             logging=api_data['logging']
         )
+
+        # open config file
 
         with open(full_path, 'w') as yaml_config_file:
             try:
@@ -931,9 +1141,13 @@ class API(object):
         :return: result
         """
 
+         # Default parameters for config file
+
         file_name = '.surepatch.yaml'
         file_path = os.path.expanduser('~')
         full_path = os.path.join(file_path, file_name)
+
+        # If file does not exist
 
         if not os.path.isfile(full_path):
             print_line('Config file does not exist: ~/{0}.'.format(file_name))
@@ -941,15 +1155,23 @@ class API(object):
             return False
 
         components_helper = ComponentsHelper()
-        enc = components_helper.define_file_encoding(full_path)
 
-        if enc == 'undefined':
+        # Define config file encoding
+
+        if components_helper.define_file_encoding(full_path) == 'undefined':
             print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
             return False
 
+        # Open config file
+
         with open(full_path, 'r') as yaml_config_file:
             try:
+
+                # Load config file contents in YAML format
+
                 config = yaml.load(yaml_config_file)
+
+                # Analyse config elements
 
                 if 'team' not in config:
                     config['team'] = None

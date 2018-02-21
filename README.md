@@ -557,7 +557,7 @@ Fix vulnerabilities and than check changes like this
 ```sh
 @ surepatch --platform=newtest --action=create_set --project=pyproject --target=[os,pip,req] --file=[no,no,/home/user/workspace/pythonproject/requirements.txt]
 ```
-# Using as python module
+### Using as python module
 After installation via pip, you can use surepatch as python module like this:
 ```sh
 from surepatch import surepatch_api

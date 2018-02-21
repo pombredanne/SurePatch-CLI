@@ -1,4 +1,5 @@
-"""Additional functions for OS info
+"""
+Additional functions for OS info.
 """
 
 import sys
@@ -12,6 +13,7 @@ def get_os_platform():
 
     if sys.platform == 'darwin' or platform.system() == 'Darwin':
         return OSs.MACOS
+
     if sys.platform == 'linux2' or sys.platform == 'linux':
         dist = platform.dist()[0]
         if 'debian' in dist:
@@ -20,6 +22,7 @@ def get_os_platform():
             return OSs.FEDORA
         if 'Ubuntu' in dist or 'ubuntu' in dist:
             return OSs.UBUNTU
+
     if sys.platform == 'win32' or sys.platform == 'win64':
         return OSs.WINDOWS
 
@@ -30,8 +33,10 @@ def get_os_version(os_platform):
     :param os_platform: os
     :return: result
     """
+
     if os_platform == 'windows':
         return platform.uname()[2]
+
     return ''
 
 
@@ -44,6 +49,7 @@ def get_os_sp(os_platform):
 
     if os_platform == 'windows':
         return platform.win32_ver()[2][2:]
+
     return ''
 
 

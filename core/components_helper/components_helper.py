@@ -181,8 +181,13 @@ class ComponentsHelper(object):
                                'verification'.format(len(api_data['components'])))
                     return True
 
+            # Otherwise
+
             print_line('Failed parse OS components.')
             return False
+
+        # Otherwise
+
         return False
 
     def get_components_os_auto_system_path(self, api_data):
@@ -304,6 +309,7 @@ class ComponentsHelper(object):
         """
 
         # Collect Python 2 PIP packages from shell request
+
         if self.load_pip_packages_from_shell_legacy(api_data=api_data):
 
             # Parse packages
@@ -338,7 +344,8 @@ class ComponentsHelper(object):
 
         # Otherwise
 
-        print_line('Something wrong with Python PIP packages in file path {0}.'.format(api_data['file']))
+        print_line('Something wrong with Python PIP packages in file path '
+                   '{0}.'.format(api_data['file']))
         return False
 
     def get_components_requirements_auto_system_path(self, api_data):
@@ -412,7 +419,8 @@ class ComponentsHelper(object):
 
         # Otherwise
 
-        print_line('Something wrong with NPM package.json packages in file path {0}.'.format(api_data['file']))
+        print_line('Something wrong with NPM package.json packages in file path '
+                   '{0}.'.format(api_data['file']))
         return False
 
     def get_components_gem_auto_system_path(self, api_data):
@@ -430,13 +438,14 @@ class ComponentsHelper(object):
             # Parse packages
 
             if self.parse_gem_packages_from_path(api_data=api_data):
-                print_line('Collect {0} Ruby raw packages before processing and '
+                print_line('Collect {0} Ruby gem raw packages before processing and '
                            'verification'.format(len(api_data['components'])))
                 return True
 
         # Otherwise
 
-        print_line('Something wrong with packages in file path {0}.'.format(api_data['file']))
+        print_line('Something wrong with Ruby gem packages in file path '
+                   '{0}.'.format(api_data['file']))
         return False
 
     def get_components_npm_auto_system_none(self, api_data):
@@ -456,7 +465,7 @@ class ComponentsHelper(object):
             api_data['packages'] = raw_npm_components
 
             if self.parse_npm_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and '
+                print_line('Collect {0} NPM raw components before processing and '
                            'verification'.format(len(api_data['components'])))
                 return True
 
@@ -481,7 +490,7 @@ class ComponentsHelper(object):
             api_data['packages'] = raw_npm_components
 
             if self.parse_npm_packages(api_data=api_data):
-                print_line('Collect {0} raw components before processing and '
+                print_line('Collect {0} NPM raw components before processing and '
                            'verification'.format(len(api_data['components'])))
                 return True
 
@@ -535,7 +544,7 @@ class ComponentsHelper(object):
 
         # Otherwise
 
-        print_line('Something wrong with packages in file path')
+        print_line('Something wrong with Ruby gem packages in file path')
         return False
 
     def get_components_gemfile_auto_system_path(self, api_data):
@@ -583,7 +592,7 @@ class ComponentsHelper(object):
 
         # Otherwise
 
-        print_line('Failed parse Gemfile packages.')
+        print_line('Failed parse Gemfile.lock packages.')
         return False
 
     def get_components_any_auto_user_path(self, api_data):
@@ -596,21 +605,20 @@ class ComponentsHelper(object):
 
         # Get file to parse
 
-        filename = api_data['file']
-
-        if os.path.isfile(filename):
+        if os.path.isfile(api_data['file']):
             # If exists
 
             # Define user file encoding
 
-            if self.define_file_encoding(filename=filename) == 'undefined':
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
             # Collect components from file
 
             components = []
-            with open(filename, 'r') as pf:
+
+            with open(api_data['file'], 'r') as pf:
                 packages = pf.read().split('\n')
                 for package in packages:
                     if len(package) != 0:
@@ -629,7 +637,7 @@ class ComponentsHelper(object):
 
         # Otherwise
 
-        print_line('File {0} not found.'.format(filename))
+        print_line('File with User packages {0} not found.'.format(api_data['file']))
         return False
 
     def get_components_any_manual_user_none(self, api_data):
@@ -642,6 +650,7 @@ class ComponentsHelper(object):
         # Ask User for components and versions
 
         components = []
+
         if ask('Continue (y/n)? ') == 'n':
             return False
 
@@ -880,6 +889,8 @@ class ComponentsHelper(object):
                                     if '|' not in dversion:
                                         components.append({"name": dname, "version": dversion})
 
+                # Complete components in api data set
+
                 api_data['components'] = components
                 return True
 
@@ -889,7 +900,7 @@ class ComponentsHelper(object):
 
         # Otherwise
 
-        print_line('File {0} does not exists.'.format(api_data['file']))
+        print_line('File with yarn packages {0} does not exists.'.format(api_data['file']))
         return False
 
 
@@ -1061,7 +1072,7 @@ class ComponentsHelper(object):
                 print_line('File read exception {0}.'.format(e))
                 return False
 
-        print_line('File {0} does not exists.'.format(api_data['file']))
+        print_line('File with Ubuntu packages {0} does not exists.'.format(api_data['file']))
         return False
 
     def load_fedora_packages_from_shell(self, api_data):
@@ -1082,8 +1093,8 @@ class ComponentsHelper(object):
             return True
 
         except OSError as os_error:
-            print_line('Shell command throw errno: {0}, strerror: {1} and '
-                       'filename: {2}.'.format(os_error.errno, os_error.strerror,
+            print_line('Shell command to get Fedora packages throw errno: {0}, '
+                       'strerror: {1} and filename: {2}.'.format(os_error.errno, os_error.strerror,
                                                os_error.filename))
             return False
 
@@ -1516,17 +1527,22 @@ class ComponentsHelper(object):
         :return: result
         """
 
+        # Define location: local folder or root directory
+
         if local:
             try:
                 os.chdir(api_data['file'])
             except Exception as common_exception:
                 print_line('OS.Chdir get an exception {common_exception}'.format(common_exception))
                 return False
+
         else:
             if api_data['os_type'] == OSs.WINDOWS:
                 os.chdir("c:\\")
             else:
                 os.chdir("/")
+
+        # Define command
 
         cmd = "gem list"
 
@@ -1534,6 +1550,9 @@ class ComponentsHelper(object):
 
         try:
             if api_data['os_type'] == OSs.WINDOWS:
+
+                # For Windows hosts
+
                 proc = subprocess.Popen(["powershell", cmd], stdout=subprocess.PIPE)
                 output, error = proc.communicate()
                 proc.kill()
@@ -1541,10 +1560,12 @@ class ComponentsHelper(object):
                 output = output.decode('utf-8').replace('\r', '').split('\n')
 
                 if error:
-                    print_line('Powershell command throw {0} code and {1} error message.'.format(proc.returncode, error.strip()))
+                    print_line('Powershell command throw {0} code and '
+                               '{1} error message.'.format(proc.returncode, error.strip()))
                     return False
 
                 if output:
+                    # Normal response
                     api_data['packages'] = output
                     return True
 
@@ -1553,21 +1574,28 @@ class ComponentsHelper(object):
                     api_data['os_type'] == OSs.UBUNTU or \
                     api_data['os_type'] == OSs.FEDORA or \
                     api_data['os_type'] == OSs.MACOS:
+
+                # For Linux/MacOS hosts
+
                 proc = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
                 output, error = proc.communicate()
                 proc.kill()
                 output = output.decode('utf-8').replace('\r', '').split('\n')
 
                 if error:
-                    print_line('Shell command throw {0} code and {1} error message.'.format(proc.returncode, error.strip()))
+                    print_line('Shell command throw {0} code and '
+                               '{1} error message.'.format(proc.returncode, error.strip()))
                     return False
 
                 if output:
+                    # Normal response
                     api_data['packages'] = output
                     return True
 
         except OSError as os_error:
-            print_line('Shell command throw errno: {0}, strerror: {1} and filename: {2}.'.format(os_error.errno, os_error.strerror, os_error.filename))
+            print_line('Shell command throw errno: {0}, strerror: '
+                       '{1} and filename: {2}.'.format(os_error.errno, os_error.strerror,
+                                                       os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -1582,25 +1610,28 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.isfile(filename):
+        if os.path.isfile(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define file encoding
 
-            if enc == 'undefined':
-                print_line('Undefined file {0} encoding.'.format(filename))
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
+                print_line('Undefined file {0} encoding.'.format(api_data['file']))
                 return False
 
             try:
-                with open(filename, 'r') as pf:
-                    cont = pf.read()
+                with open(api_data['file'], 'r') as file_descriptor:
+                    # Normal response
+                    cont = file_descriptor.read()
                     api_data['packages'] = cont.split('\n')
                     return True
 
             except Exception as e:
-                print_line('File {0} read exception: {1}'.format(filename, e))
+                print_line('File {0} read exception: {1}'.format(api_data['file'], e))
                 return False
+
+        # Otherwise
 
         print_line('File does not exist.')
         return False
@@ -1613,27 +1644,30 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.isfile(filename):
+        if os.path.isfile(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define file encoding
 
-            if enc == 'undefined':
-                print_line('Undefined file {0} encoding.'.format(filename))
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
+                print_line('Undefined file {0} encoding.'.format(api_data['file']))
                 return False
 
             try:
-                with open(filename, 'r') as pf:
+                with open(api_data['file'], 'r') as pf:
+                    # Normal response
                     cont = pf.read()
                     api_data['packages'] = cont.split('\n')
                     return True
 
             except Exception as e:
-                print_line('File {0} read exception: {1}'.format(filename, e))
+                print_line('File {0} read exception: {1}'.format(api_data['file'], e))
                 return False
 
-        print_line('File does not exist.')
+        # Otherwise
+
+        print_line('File {0} not found.'.format(api_data['file']))
         return False
 
     def load_php_composer_json_system_path(self, api_data):
@@ -1644,26 +1678,30 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.isfile(filename):
+        if os.path.isfile(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define file encoding
 
-            if enc == 'undefined':
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
-            with open(filename, mode='r') as pf:
+            with open(api_data['file'], mode='r') as pf:
                 try:
+                    # Normal response
                     api_data['packages'] = json.load(pf)
                     return True
 
                 except json.JSONDecodeError as json_decode_error:
-                    print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
+                    print_line('An exception occured with json decoder: '
+                               '{0}.'.format(json_decode_error))
                     return False
 
-        print_line('File {0} not found.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} not found.'.format(api_data['file']))
         return False
 
     def load_php_composer_lock_system_path(self, api_data):
@@ -1674,26 +1712,30 @@ class ComponentsHelper(object):
         :return: result
         """
 
-        filename = api_data['file']
+        # If exists
 
-        if os.path.isfile(filename):
+        if os.path.isfile(api_data['file']):
 
-            enc = self.define_file_encoding(filename=filename)
+            # Define file encoding
 
-            if enc == 'undefined':
+            if self.define_file_encoding(filename=api_data['file']) == 'undefined':
                 print_line('Undefined file encoding. Please, use utf-8 or utf-16.')
                 return False
 
-            with open(filename, 'r') as pf:
+            with open(api_data['file'], 'r') as pf:
                 try:
+                    # Normal response
                     api_data['packages'] = json.load(pf)
                     return True
 
                 except json.JSONDecodeError as json_decode_error:
-                    print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
+                    print_line('An exception occured with json decoder: '
+                               '{0}.'.format(json_decode_error))
                     return False
 
-        print_line('File {0} not found.'.format(filename))
+        # Otherwise
+
+        print_line('File {0} not found.'.format(api_data['file']))
         return False
 
     # -------------------------------------------------------------------------
@@ -1712,22 +1754,33 @@ class ComponentsHelper(object):
         packages = []
         try:
             for report_element in report:
+
+                # If element exists
+
                 if len(report_element) > 0:
                     splitted_report_element = report_element.split()
                     component_and_version = splitted_report_element[len(splitted_report_element) - 1]
                     element_array = component_and_version.split('_')
+
+                    # If element is valid
+
                     if len(element_array) >= 2:
                         common_component_name = element_array[0]
                         common_component_version = element_array[1]
                         component = {'name': common_component_name.split('.')}
+
                         if len(common_component_name.split('.')) >= 3 and component['name'][1] == 'NET':
                             component['name'] = 'net_framework'
                         else:
                             component['name'] = common_component_name.split('.')
                             component['name'] = component['name'][len(component['name']) - 1]
+
                         component['version'] = common_component_version.split('.')
                         component['version'] = component['version'][0] + '.' + component['version'][1]
                         packages.append(component)
+
+            # Normal response
+
             api_data['components'] = packages
             return True
 
@@ -1743,14 +1796,18 @@ class ComponentsHelper(object):
         :param _report: raw packages.
         :return: result
         """
+
+        # Define packages type
+
         if isinstance(api_data['packages'], list):
             number_of_line_breaks = api_data['packages']
         else:
             number_of_line_breaks = api_data['packages'].split('\n')
-        # number_of_line_breaks = api_data['packages']
+
         new_components = []
         pattern1 = "(\d+[.]\d+[.]?\d*)"
         pattern = re.compile(pattern1)
+
         for line in number_of_line_breaks:
             l = re.sub(r'\s+', ' ', line)
             l2 = l.split()
@@ -1765,6 +1822,9 @@ class ComponentsHelper(object):
                         if ':' in name:
                             name = name[:name.index(':')]
                         new_components.append({"name": name, "version": ver})
+
+        # Complete components section in api data set
+
         api_data['components'] = new_components
         return True
 
@@ -1779,14 +1839,19 @@ class ComponentsHelper(object):
 
         new_components = []
         number_of_line_breaks = api_data['packages']
+
         for line in number_of_line_breaks:
             line = line.replace('\n', '')
             pattern = '\s*\-\s*'
             component_array = re.split(pattern, line)
+
             if len(component_array) >= 2:
                 name = component_array[0]
                 version = component_array[1]
                 new_components.append({'name': name, 'version': version})
+
+        # Complete components section in api data set
+
         api_data['components'] = new_components
         return True
 
@@ -1798,6 +1863,9 @@ class ComponentsHelper(object):
         :param _report: raw packages
         :return: result
         """
+
+        # Define templates
+
         output = api_data['packages']
 
         templ = {'name': '', 'version': ''}
@@ -1808,13 +1876,19 @@ class ComponentsHelper(object):
         if len(output) == 0:
             exit(1)
 
-        # check first string
+        # Check first string
+
         if 'Version:' in output[0].upper():
             ver_or_loc = 1
         elif 'Location:' in output[0].upper():
             ver_or_loc = 2
 
+        # Parse output sections
+
         for out in output:
+
+            # Locate Version and Location sections
+
             if 'Version:' in out:
                 templ['version'] = out.replace('Version:', '')
                 templ['name'] = None
@@ -1829,16 +1903,22 @@ class ComponentsHelper(object):
                 package["name"] = templ["name"][i:].replace('.app', '').replace('/', '')
                 package["version"] = templ["version"]
 
-                # delete all except digits and .
+                # Delete all except digits and
+
                 package["version"] = re.sub(r'[^0123456789\.]', '', package["version"])
 
-                # delete all digits
+                # Delete all digits
+
                 package["name"] = re.sub(r'[^\w\s]+|[\d]+', r'', package["name"])
 
                 if package["version"] != '':
                     packages.append(package)
                 del package
+
                 templ['version'] = None
+
+        # Normal output
+
         api_data['components'] = packages
         return True
 
@@ -1851,13 +1931,20 @@ class ComponentsHelper(object):
         :return: result
         """
 
+        # Preprocess packages
+
         packages = api_data['packages']
         packages = packages.replace(')', '')
         packages = packages.replace(' ', '')
         packages = packages.split('\r\n')
+
+        # If packages is valid
+
         if len(packages) == 1:
             packages = packages[0].split('\n')
+
         components = []
+
         for package in packages:
             if len(package) <= 3:
                 continue
@@ -1865,6 +1952,9 @@ class ComponentsHelper(object):
             name = line[0]
             version = line[1]
             components.append({'name': name, 'version': version})
+
+        # Normal response
+
         api_data['components'] = components
         return True
 
@@ -1876,8 +1966,14 @@ class ComponentsHelper(object):
         :param packages: raw packages
         :return: result
         """
+
+        # Get packages
+
         packages = api_data['packages']
         components = []
+
+        # Parse packages
+
         for ref in packages:
             if len(ref) > 0:
                 if '==' in ref:
@@ -1900,9 +1996,12 @@ class ComponentsHelper(object):
                         mm = importlib.import_module(ref)
                         components.append({'name': ref, 'version': mm.__version__})
                     except ImportError as import_exception:
-                        print_line('Get an exception {0} when define component version.'.format(import_exception))
-                        # components.append({'name': ref, 'version': '*'})
+                        print_line('Get an exception {0} when define '
+                                   'component version.'.format(import_exception))
                         continue
+
+        # Normal response
+
         api_data['components'] = components
         return True
 
@@ -1915,10 +2014,16 @@ class ComponentsHelper(object):
         :param comp: raw packages.
         :return: result
         """
+
+        # Get packages
+
         npm_components = api_data['packages']
         components = []
 
         for comp in npm_components:
+
+            # Find 'from' section
+
             if 'from' in comp['name']:
                 if '@' in comp['version']:
                     name = comp['version'].split('@')[0]
@@ -1926,19 +2031,26 @@ class ComponentsHelper(object):
                     myversion = version
                     if version == 'latest':
                         cmd = 'npm view {0} version'.format(name)
+
                         try:
                             if api_data['os_type'] == OSs.WINDOWS:
-                                proc = subprocess.Popen(["powershell", cmd], shell=True, stdout=subprocess.PIPE)
+                                proc = subprocess.Popen(
+                                    ["powershell", cmd], shell=True, stdout=subprocess.PIPE)
                                 version, error = proc.communicate()
                             else:
                                 proc = subprocess.Popen([cmd], shell=True, stdout=subprocess.PIPE)
                                 version, error = proc.communicate()
                             if version:
                                 myversion = version.decode('utf-8').replace('\n', '')
+
                         except Exception as e:
-                            print_line('Get an exception {0} for npm component {1} version info.'.format(e, name))
+                            print_line('Get an exception {0} for npm component '__init__.py
+                                       '{1} version info.'.format(e, name))
                             myversion = 'latest'
+
                     components.append({'name': name, 'version': myversion})
+
+        # Normal response
 
         api_data['components'] = components
         return True
@@ -1964,23 +2076,33 @@ class ComponentsHelper(object):
                     return True
             return False
 
+        # Find packages abd dependencies
+
         packages = api_data['packages']
         dependencies = packages['dependencies']
         keys = dependencies.keys()
         components = []
         for key in keys:
+
+            # Process dependencies keys
+
             if not already_in_components(components=components, key=key):
                 components.append({'name': key, "version": dependencies[key]['version']})
+
             if 'requires' in dependencies[key].keys():
                 requires = dependencies[key]['requires']
                 for rkey in requires.keys():
                     if not already_in_components(components=components, key=rkey):
                         components.append({'name': rkey, 'version': requires[rkey]})
+
             if 'dependencies' in dependencies[key].keys():
                 deps = dependencies[key]['dependencies']
                 for dkey in deps.keys():
                     if not already_in_components(components=components, key=dkey):
                         components.append({'name': dkey, 'version': deps[dkey]})
+
+        # Normal response
+
         api_data['components'] = components
         return True
 
@@ -1992,22 +2114,34 @@ class ComponentsHelper(object):
         :param packages: raw packages
         :return: result
         """
+
+        # Get packages
+
         packages = api_data['packages']
         components = []
+
+        # Filter dependencies and devDependencies sections
+
         if 'dependencies' in packages:
             dependencies = packages['dependencies']
         else:
             dependencies = {}
+
         if 'devDependencies' in packages:
             dev_dependencies = packages['devDependencies']
         else:
             dev_dependencies = {}
+
         if dev_dependencies != {}:
             for key in dev_dependencies.keys():
                 components.append({'name': key, 'version': str(dev_dependencies[key]).replace('^', '')})
+
         if dependencies != {}:
             for key in dependencies.keys():
                 components.append({'name': key, 'version': str(dependencies[key]).replace('^', '')})
+
+        # Normal response
+
         api_data['components'] = components
         return True
 
@@ -2018,6 +2152,7 @@ class ComponentsHelper(object):
         :param packages: raw packages.
         :return: result
         """
+
         return self.parse_gem_packages_from_path(api_data=api_data)
 
     @staticmethod
@@ -2028,9 +2163,16 @@ class ComponentsHelper(object):
         :param packages: raw packages
         :return: result
         """
+
+        # Get packages
+
         packages = api_data['packages']
         components = []
+
         for c in packages:
+
+            # If package is valid
+
             if len(c) > 0:
                 c = c.replace(' ', '').replace(')', '').replace('default:', '')
                 cs = c.split('(')
@@ -2039,6 +2181,9 @@ class ComponentsHelper(object):
                         components.append({'name': cs[0], 'version': cs[1]})
                 except:
                     continue
+
+        # Normal response
+
         api_data['components'] = components
         return True
 
@@ -2050,63 +2195,78 @@ class ComponentsHelper(object):
         :param packages: list of packages
         :return: result
         """
+
+        # Get packages
+
         content_splitted_by_strings = api_data['packages']
         content_without_empty_strings = []
+
         for string in content_splitted_by_strings:
             if len(string) > 0:
                 content_without_empty_strings.append(string)
+
         content_without_comments = []
+
         for string in content_without_empty_strings:
             if not string.lstrip().startswith('#'):
                 if '#' in string:
                     content_without_comments.append(string.lstrip().split('#')[0])
                 else:
                     content_without_comments.append(string.lstrip())
+
         cleared_content = []
+
         for string in content_without_comments:
             if string.startswith('gem '):
                 cleared_content.append(string.split('gem ')[1])
             elif string.startswith("gem('"):
                 cleared_content.append(string.split("gem('")[1][:-1])
+
         prepared_data_for_getting_packages_names_and_versions = []
+
         for string in cleared_content:
             intermediate_result = re.findall(
                 r'''('.*',\s*'.*\d.*?'|".*",\s*".*\d.*?"|".*",\s*'.*\d.*?'|'.*',\s*".*\d.*?"|.*',\s*'.*\d.*?')''', string)
             if intermediate_result:
                 prepared_data_for_getting_packages_names_and_versions.append(intermediate_result[0])
+
         packages = []
+
         for prepared_string in prepared_data_for_getting_packages_names_and_versions:
             package = {
                 'name': '*',
-                'version': '*'
-            }
+                'version': '*'}
             splitted_string_by_comma = prepared_string.split(',')
             package_name = splitted_string_by_comma[0][1:-1]
             package['name'] = package_name
+
             if len(splitted_string_by_comma) == 2:
                 package['version'] = re.findall(r'(\d.*)', splitted_string_by_comma[1])[0][0:-1]
                 packages.append(package)
+
             elif len(splitted_string_by_comma) == 3:
                 min_package_version = re.findall(r'(\d.*)', splitted_string_by_comma[1])[0][0:-1]
                 package['version'] = min_package_version
                 packages.append(package)
                 package = {
                     'name': '*',
-                    'version': '*'
-                }
+                    'version': '*'}
                 max_package_version = re.findall(r'(\d.*)', splitted_string_by_comma[2])[0][0:-1]
                 package['name'] = package_name
                 package['version'] = max_package_version
                 packages.append(package)
+
         formed_packages = []
         buff_packages = []
+
         for package in packages:
             buff_package = {
                 'name': '*',
                 'version': '*',
-                'origin_version': '*'
-            }
+                'origin_version': '*'}
+
             splitted_packages_by_dot = package['version'].split('.')
+
             if len(splitted_packages_by_dot) == 1:
                 buff_package['name'] = package['name']
                 buff_package['origin_version'] = package['version']
@@ -2114,6 +2274,7 @@ class ComponentsHelper(object):
                 formed_packages.append(package)
                 buff_package['version'] = package['version']
                 buff_packages.append(buff_package)
+
             elif len(splitted_packages_by_dot) == 2:
                 buff_package['name'] = package['name']
                 buff_package['origin_version'] = package['version']
@@ -2121,17 +2282,24 @@ class ComponentsHelper(object):
                 formed_packages.append(package)
                 buff_package['version'] = package['version']
                 buff_packages.append(buff_package)
+
             else:
                 formed_packages.append(package)
+
         unique_packages = []
+
         for i in range(len(formed_packages)):
             package = formed_packages.pop()
             if package not in unique_packages:
                 unique_packages.append(package)
+
         for package in unique_packages:
             for buff_package in buff_packages:
                 if package['name'] == buff_package['name'] and package['version'] == buff_package['version']:
                     package['version'] = buff_package['origin_version']
+
+        # Normal response
+
         api_data['components'] = unique_packages
         return True
 
@@ -2143,35 +2311,46 @@ class ComponentsHelper(object):
         :param packages: list of packages
         :return: result
         """
+
+        # Get packages
+
         splitted_content_by_strings = api_data['packages']
         ignore_strings_startswith = (
             'GIT', 'remote', 'revision',
             'specs', 'PATH', 'GEM',
             'PLATFORMS', 'DEPENDENCIES', 'BUNDLED')
+
         cleared_content = []
+
         for string in splitted_content_by_strings:
             if not string.lstrip().startswith(ignore_strings_startswith):
                 cleared_content.append(string.lstrip())
+
         prepared_data_for_getting_packages_names_and_versions = []
+
         for string in cleared_content:
             intermediate_result = re.findall(r'(.*\s*\(.*\))', string)
             if intermediate_result:
                 prepared_data_for_getting_packages_names_and_versions.append(intermediate_result)
+
         packages = []
+
         for data in prepared_data_for_getting_packages_names_and_versions:
             package = {
                 'name': '*',
-                'version': '*'
-            }
+                'version': '*'}
             splitted_data = data[0].split(' ')
             package_name = splitted_data[0]
             package['name'] = package_name
+
             if len(splitted_data) == 2:
                 package['version'] = splitted_data[1][1:-1]
                 packages.append(package)
+
             elif len(splitted_data) == 3:
                 package['version'] = splitted_data[2][0:-1]
                 packages.append(package)
+
             elif len(splitted_data) == 5:
                 min_version = splitted_data[2][0:-1]
                 package['version'] = min_version
@@ -2184,15 +2363,18 @@ class ComponentsHelper(object):
                 package['name'] = package_name
                 package['version'] = max_version
                 packages.append(package)
+
         formed_packages = []
         buff_packages = []
+
         for package in packages:
             buff_package = {
                 'name': '*',
                 'version': '*',
-                'origin_version': '*'
-            }
+                'origin_version': '*'}
+
             splitted_packages_by_dot = package['version'].split('.')
+
             if len(splitted_packages_by_dot) == 1:
                 buff_package['name'] = package['name']
                 buff_package['origin_version'] = package['version']
@@ -2200,6 +2382,7 @@ class ComponentsHelper(object):
                 formed_packages.append(package)
                 buff_package['version'] = package['version']
                 buff_packages.append(buff_package)
+
             elif len(splitted_packages_by_dot) == 2:
                 buff_package['name'] = package['name']
                 buff_package['origin_version'] = package['version']
@@ -2207,17 +2390,24 @@ class ComponentsHelper(object):
                 formed_packages.append(package)
                 buff_package['version'] = package['version']
                 buff_packages.append(buff_package)
+
             else:
                 formed_packages.append(package)
+
         unique_packages = []
+
         for i in range(len(formed_packages)):
             package = formed_packages.pop()
             if package not in unique_packages:
                 unique_packages.append(package)
+
         for package in unique_packages:
             for buff_package in buff_packages:
                 if package['name'] == buff_package['name'] and package['version'] == buff_package['version']:
                     package['version'] = buff_package['origin_version']
+
+        # Normal response
+
         api_data['components'] = unique_packages
         return True
 
@@ -2229,8 +2419,12 @@ class ComponentsHelper(object):
         :param packages: list of packages
         :return: result
         """
+
+        # Get packages
+
         content = api_data['packages']
         packages = []
+
         for key in content:
             if key == 'require' or key == 'require-dev':
                 for inner_key, value in content[key].items():
@@ -2249,8 +2443,7 @@ class ComponentsHelper(object):
                     for splitted_value in splitted_values:
                         package = {
                             'name': '*',
-                            'version': '*'
-                        }
+                            'version': '*'}
 
                         version = re.findall(r'(\d.*)', splitted_value)
 
@@ -2261,12 +2454,12 @@ class ComponentsHelper(object):
 
         formed_packages = []
         buff_packages = []
+
         for package in packages:
             buff_package = {
                 'name': '*',
                 'version': '*',
-                'origin_version': '*'
-            }
+                'origin_version': '*'}
 
             splitted_packages_by_dot = package['version'].split('.')
 
@@ -2279,6 +2472,7 @@ class ComponentsHelper(object):
 
                 buff_package['version'] = package['version']
                 buff_packages.append(buff_package)
+
             elif len(splitted_packages_by_dot) == 2:
                 buff_package['name'] = package['name']
                 buff_package['origin_version'] = package['version']
@@ -2288,10 +2482,12 @@ class ComponentsHelper(object):
 
                 buff_package['version'] = package['version']
                 buff_packages.append(buff_package)
+
             else:
                 formed_packages.append(package)
 
         unique_packages = []
+
         for i in range(len(formed_packages)):
             package = formed_packages.pop()
 
@@ -2302,6 +2498,8 @@ class ComponentsHelper(object):
             for buff_package in buff_packages:
                 if package['name'] == buff_package['name'] and package['version'] == buff_package['version']:
                     package['version'] = buff_package['origin_version']
+
+        # Normal response
 
         api_data['components'] = unique_packages
         return True
@@ -2314,8 +2512,12 @@ class ComponentsHelper(object):
         :param _packages: list of packages
         :return: result
         """
+
+        # Get packages
+
         content = api_data['packages']
         packages = []
+
         for key in content:
             if key == 'packages' or key == 'packages-dev':
                 key_packages = content[key]
@@ -2338,8 +2540,7 @@ class ComponentsHelper(object):
                             for splitted_value in splitted_values:
                                 package = {
                                     'name': '*',
-                                    'version': '*'
-                                }
+                                    'version': '*'}
 
                                 version = re.findall(r'(\d.*)', splitted_value)
 
@@ -2365,8 +2566,7 @@ class ComponentsHelper(object):
                             for splitted_value in splitted_values:
                                 package = {
                                     'name': '*',
-                                    'version': '*'
-                                }
+                                    'version': '*'}
 
                                 version = re.findall(r'(\d.*)', splitted_value)
 
@@ -2377,12 +2577,12 @@ class ComponentsHelper(object):
 
         formed_packages = []
         buff_packages = []
+
         for package in packages:
             buff_package = {
                 'name': '*',
                 'version': '*',
-                'origin_version': '*'
-            }
+                'origin_version': '*'}
 
             splitted_packages_by_dot = package['version'].split('.')
 
@@ -2395,6 +2595,7 @@ class ComponentsHelper(object):
 
                 buff_package['version'] = package['version']
                 buff_packages.append(buff_package)
+
             elif len(splitted_packages_by_dot) == 2:
                 buff_package['name'] = package['name']
                 buff_package['origin_version'] = package['version']
@@ -2408,6 +2609,7 @@ class ComponentsHelper(object):
                 formed_packages.append(package)
 
         unique_packages = []
+
         for i in range(len(formed_packages)):
             package = formed_packages.pop()
 
@@ -2418,6 +2620,8 @@ class ComponentsHelper(object):
             for buff_package in buff_packages:
                 if package['name'] == buff_package['name'] and package['version'] == buff_package['version']:
                     package['version'] = buff_package['origin_version']
+
+        # Normal response
 
         api_data['components'] = unique_packages
         return True
@@ -2434,7 +2638,11 @@ class ComponentsHelper(object):
         :param filename:
         :return:
         """
+
+        # Define valid encodings
+
         encodings = ['utf-16', 'utf-8', 'windows-1250', 'windows-1252', 'iso-8859-7', 'macgreek']
+
         for e in encodings:
             try:
                 import codecs
@@ -2444,6 +2652,9 @@ class ComponentsHelper(object):
                 return e
             except:
                 continue
+
+        # Unknown encoding
+
         return 'undefined'
 
     def get_current_set_name(self, api_data):
@@ -2453,16 +2664,33 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Define organization section
+
         if api_data['organization'] is None:
             return False
+
+        # Define platforms section
+
         if api_data['organization']['platforms'] is None:
             return False
+
+        # Define platform number
+
         platform_number = self.web_api.get_platform_number_by_name(api_data=api_data)
+
         if platform_number == -1:
             return False
+
+        # Define project number
+
         project_number = self.web_api.get_project_number_by_name(api_data=api_data)
+
         if project_number == -1:
             return ['0.0.1']
+
+        # Normal response
+
         return [api_data['organization']['platforms'][platform_number]['projects'][project_number]['current_component_set']['name']]
 
     def get_current_component_set(self, api_data):
@@ -2472,16 +2700,33 @@ class ComponentsHelper(object):
         :param api_data: api data set
         :return: result
         """
+
+        # Define organization section
+
         if api_data['organization'] is None:
             return False
+
+        # Define platforms section
+
         if api_data['organization']['platforms'] is None:
             return False
+
+        # Define platform number
+
         platform_number = self.web_api.get_platform_number_by_name(api_data=api_data)
+
         if platform_number == -1:
             return False
+
+        # Define project number
+
         project_number = self.web_api.get_project_number_by_name(api_data=api_data)
+
         if project_number == -1:
             return False
+
+        # Normal response
+
         return [api_data['organization']['platforms'][platform_number]['projects'][project_number]['current_component_set']]
 
 

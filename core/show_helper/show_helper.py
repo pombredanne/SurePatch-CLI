@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
+
+"""
+Show Helper module.
+"""
 
 import sys
 
@@ -13,6 +17,9 @@ from core.webapi import WebAPI
 
 
 class ShowHelper(object):
+    """
+    Show Helper class.
+    """
 
     def __init__(self):
         self.web_api = WebAPI()
@@ -106,7 +113,8 @@ class ShowHelper(object):
 
         print_line('Current component set: {0}.'.format(my_set[0]))
 
-        components = self.components_helper.get_current_component_set(api_data=api_data)[0]['components']
+        components = self.components_helper.get_current_component_set(
+            api_data=api_data)[0]['components']
 
         if components[0] is None:
             print_line('Get component set error.')
@@ -115,7 +123,10 @@ class ShowHelper(object):
         if 'file' not in api_data:
             api_data['file'] = None
 
-        print_components(components=components, title=api_data['platform'] + '/' + api_data['project'], filename=api_data['file'])
+        print_components(
+            components=components,
+            title=api_data['platform'] + '/' + api_data['project'],
+            filename=api_data['file'])
 
         return True
 
@@ -135,13 +146,15 @@ class ShowHelper(object):
         api_data['project_number'] = self.web_api.get_project_number_by_name(api_data=api_data)
 
         if api_data['project_number'] == -1:
-            print_line("No such project {0} in platform {1}.".format(api_data['project'], api_data['platform']))
+            print_line("No such project {0} in platform "
+                       "{1}.".format(api_data['project'], api_data['platform']))
             return False
 
         api_data['project_url'] = api_data['organization']['platforms'][api_data['platform_number']]['projects'][api_data['project_number']]['url']
 
         if not self.web_api.send_get_issues_request(api_data=api_data):
-            print_line("Cant load issues for platform {0} and project {1}.".format(api_data['platform'], api_data['project']))
+            print_line("Cant load issues for platform {0} and project "
+                       "{1}.".format(api_data['platform'], api_data['project']))
             return False
 
         issues = api_data['issues']
@@ -159,7 +172,9 @@ class ShowHelper(object):
         if 'file' not in api_data:
             api_data['file'] = None
 
-        print_issues(issues=printed_issues, title=api_data['platform'] + '/' + api_data['project'], filename=api_data['file'])
+        print_issues(
+            issues=printed_issues,
+            title=api_data['platform'] + '/' + api_data['project'],
+            filename=api_data['file'])
 
         return True
-

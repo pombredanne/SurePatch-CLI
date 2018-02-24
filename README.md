@@ -155,6 +155,7 @@ There are three example scripts for MacOS, Windows and Ubuntu, but you can chang
 | | | |
 |--file|<path_to_file_or_dir>| Path to file with Packages or Directory |
 |--logo|<on_off>| Show logo when started or not |
+|--logging|<on_off>| Write log file or not |
 
 # CLI App Config
 ### Create local config file
@@ -232,6 +233,25 @@ For example:
 - You can find complete set of examples of surepatch: demo_mac, demo_win, demo_ubuntu...
 - Note, that some operation required root privileges, so use Administrator rights console or 'sudo' mode in your system.
 - You can enable Two-factor authentication in SurePatch profile, but CLI App work without MFA in automatic mode.
+
+# Logging
+You can enable logging into file ~/.surepatch.log with argument --logging=on, when you call save_config action.
+Log messages will append into this file in proper format, for example:
+```sh
+...
+2018-02-24 14:27:30,102 - surepatch - DEBUG - Login success.
+2018-02-24 14:27:32,943 - surepatch - DEBUG - Collect 7 NPM raw components before processing and verification
+2018-02-24 14:27:32,951 - surepatch - DEBUG - Collect 7 NPM raw components before processing and verification
+2018-02-24 14:27:32,962 - surepatch - DEBUG - Collect 11 raw components before processing and verification
+2018-02-24 14:27:32,969 - surepatch - DEBUG - Collect 0 raw components before processing and verification
+2018-02-24 14:27:32,979 - surepatch - DEBUG - Collect 9 raw components before processing and verification
+2018-02-24 14:27:32,985 - surepatch - DEBUG - Collect 18 raw components before processing and verification
+2018-02-24 14:27:32,987 - surepatch - DEBUG - Collect 12 raw components before processing and verification
+2018-02-24 14:27:32,997 - surepatch - DEBUG - Collect 1 raw components before processing and verification
+2018-02-24 14:27:32,997 - surepatch - DEBUG - Collect 49 node_modules raw components before processing and verification
+2018-02-24 14:27:34,345 - surepatch - DEBUG - Component set 0.0.2 was created successfully.
+2018-02-24 14:27:34,345 - surepatch - DEBUG - Complete successfully.
+```
 
 # Operations with Platforms
 ### Create your first Platform
@@ -382,7 +402,7 @@ Note, that CLI App use yarn.lock system format for those data.
 This way, CLI APP scan folder and process package.json and package-lock.json files
 Note, than CLI App use package.json and package-lock.json system format for data
 ```sh
-@ surepatch --action=create_project --platform=autotest2 --project=node_modules --target=node_modules --method=auto --format=system --file=/home/user/node_project/node_modules
+@ surepatch --action=create_project --platform=autotest2 --project=autotest_node_modules --target=node_modules --method=auto --format=system --file=/home/user/node_project/node_modules
 ```
 ### Create Project from User defined source file, for example /home/user/user_packages.txt, where packages defined as lines in <name>=<version> format
 Now, you can create some file and fill it with different packages and versions.
@@ -508,8 +528,6 @@ And for pip3 packages:
 @ surepatch --action=create_set --platform=newtest --project=autotest_set_test --set=yarn.1 --target=yarn --method=auto --format=system --file=/home/user/yarn.lock
 ```
 ### Create set from node_modules folder, for example /home/user/node_project/node_modules
-This way, CLI APP scan folder and process package.json and package-lock.json files
-Note, than CLI App use package.json and package-lock.json system format for data
 ```sh
 @ surepatch --action=create_set --platform=newtest --project=autotest_set_test --set=node_modules.1 --target=node_modules --method=auto --format=system --file=/home/user/node_project/node_modules
 ```

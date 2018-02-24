@@ -471,6 +471,8 @@ class API(object):
                 if not project_helper.collect_data_for_project_yarn_lock_system_path(api_data=api_data):
                     return False
 
+            # Create project with node_modules folder {from path}
+
             if api_data['target'] == Targets.NODE_MODULES and \
                     api_data['method'] == Methods.AUTO and \
                     api_data['format'] == Formats.SYSTEM and \
@@ -736,6 +738,15 @@ class API(object):
                     api_data['format'] == Formats.SYSTEM and \
                     api_data['file'] is not None:
                 if not set_helper.collect_data_for_set_yarn_lock_system_path(api_data=api_data):
+                    return False
+
+            # Create set with node_modules folder {from path}
+
+            if api_data['target'] == Targets.NODE_MODULES and \
+                    api_data['method'] == Methods.AUTO and \
+                    api_data['format'] == Formats.SYSTEM and \
+                    api_data['file']is not None:
+                if not set_helper.collect_data_for_set_node_modules_system_path(api_data=api_data):
                     return False
 
         # If there are some components

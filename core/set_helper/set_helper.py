@@ -1039,6 +1039,45 @@ class SetHelper(object):
 
         return False
 
+    def collect_data_for_set_node_modules_system_path(self, api_data):
+        components = api_data['components']
+        api_data['components'] = []
+        if self.components_helper.get_components_node_modules(api_data=api_data):
+            # Get Platform number
+
+            api_data['platform_number'] = self.web_api.get_platform_number_by_name(api_data=api_data)
+
+            if api_data['platform_number'] == -1:
+                print_line("No such platform: {0}".format(api_data['platform']))
+                return False
+
+            # Get Project number
+
+            api_data['project_number'] = self.web_api.get_project_number_by_name(api_data=api_data)
+
+            if api_data['project_number'] == -1:
+                print_line("No such project: {0}".format(api_data['project']))
+                return False
+
+            # Get Project URL
+
+            api_data['project_url'] = \
+                api_data['organization']['platforms'][api_data['platform_number']]['projects'][
+                    api_data['project_number']][
+                    'url']
+
+            for component in api_data['components']:
+                components.append(component)
+
+            # Normal output
+
+            api_data['components'] = components
+            return True
+
+            # Otherwise
+
+        return False
+
     @staticmethod
     def get_my_platforms(api_data):
         # type: (dict) -> list

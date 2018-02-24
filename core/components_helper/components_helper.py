@@ -41,7 +41,6 @@ class ComponentsHelper(object):
     Component Helper Class.
     """
 
-
     def __init__(self):
         self.web_api = WebAPI()
 
@@ -54,7 +53,7 @@ class ComponentsHelper(object):
         """
         Get components of OS by calling of shell script and than parse them.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # For MS Windows OS 10 (use powershell command)
@@ -195,7 +194,7 @@ class ComponentsHelper(object):
         """
         Get OS packages from file, defined by path, which were created by calling the shell command.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # For MS Windows OS
@@ -305,7 +304,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Get Python PIP components, collected by pip frozen requirements call.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Collect Python 2 PIP packages from shell request
@@ -328,7 +328,7 @@ class ComponentsHelper(object):
         """
         Get Python PIP components from file, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect Python 2 PIP packages from file (already filled by shell command before)
@@ -353,7 +353,7 @@ class ComponentsHelper(object):
         """
         Get Python PIP components from requirements.txt file, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect Python packages from requirements.txt file
@@ -377,8 +377,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Get NPM packages, collected from file, defined by path.
-        :param api_data:
-        :return:
+        :param api_data: api data set
+        :return:, result modify api_data
         """
 
         # Collect NPM packages from file, already filled with packages from shell request
@@ -404,7 +404,7 @@ class ComponentsHelper(object):
         """
         Get NPM packages from package.json file, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect NPM packages from package.json file
@@ -428,7 +428,7 @@ class ComponentsHelper(object):
         """
         Get Ruby gem packages, collected from file, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect Ruby packages from file, filled before with gem list shell request
@@ -453,7 +453,7 @@ class ComponentsHelper(object):
         """
         Get NPM packages, collected from shell command, that is called globally.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect NPM packages from shell request from root directory
@@ -479,7 +479,7 @@ class ComponentsHelper(object):
         """
         Get NPM packages, collected from shell command, that is called locally from path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect NPM packages from shell request from local directory, defined by --file parameter
@@ -504,7 +504,7 @@ class ComponentsHelper(object):
         """
         Get NPM packages from lock file, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect NPM packages from lock file
@@ -528,7 +528,7 @@ class ComponentsHelper(object):
         """
         Get Ruby gem packages, collected from shell command, that is called globally.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect Ruby packages from shell request
@@ -552,7 +552,7 @@ class ComponentsHelper(object):
         """
         Get Ruby gem packages, collected from Gemfile, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect Ruby packages from Gemfile
@@ -576,7 +576,7 @@ class ComponentsHelper(object):
         """
         Get Ruby gem packages, collected from Gemfile.lock, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect Ruby packages from Gemfile.lock
@@ -600,7 +600,7 @@ class ComponentsHelper(object):
         """
         Get any components from file, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get file to parse
@@ -644,7 +644,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Get packages from console.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Ask User for components and versions
@@ -672,7 +673,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Get packages from PHP Composer.json file.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Collect packages from PHP Composer.json file
@@ -695,7 +697,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Get packages from PHP Composer.lock file.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Collect packages from PHP Composer.lock file
@@ -719,7 +722,7 @@ class ComponentsHelper(object):
         """
         Get dependencies from Maven pom.xml file.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect packages from Maven pom.xml file
@@ -739,7 +742,7 @@ class ComponentsHelper(object):
         """
         Get dependencies from yarn.lock file.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Collect packages from YARN file
@@ -754,6 +757,26 @@ class ComponentsHelper(object):
         print_line('Yarn.lock file packages loading error.')
         return False
 
+    def get_components_node_modules(self, api_data):
+        # type: (dict) -> bool
+        """
+        Get components from node_modules folder.
+        :param api_data: api data set
+        :return: result, modify api_data
+        """
+
+        # Collect packages from node_modules folder
+
+        if self.load_node_modules_components_path(api_data=api_data):
+            print_line('Collect {0} node_modules raw components before processing and '
+                       'verification'.format(len(api_data['components'])))
+            return True
+            
+        # Otherwise
+
+        print_line('Node_modules folder processing error.')
+        return False
+
     # -------------------------------------------------------------------------
     # Loaders
     # -------------------------------------------------------------------------
@@ -763,7 +786,7 @@ class ComponentsHelper(object):
         """
         Load packages from Maven pom.xml file.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
         components = []
 
@@ -814,7 +837,7 @@ class ComponentsHelper(object):
         """
         Load packages from yarn.lock file.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
         components = []
 
@@ -908,7 +931,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load OS packages for Windows platform by powershell command.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Set command for powershell
@@ -935,8 +959,10 @@ class ComponentsHelper(object):
 
         except OSError as os_error:
             print_line('Powershell command throw errno: {0}, strerror: {1} and '
-                       'filename: {2}.'.format(os_error.errno, os_error.strerror,
-                                               os_error.filename))
+                       'filename: {2}.'.format(
+                           os_error.errno,
+                           os_error.strerror,
+                           os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -948,8 +974,8 @@ class ComponentsHelper(object):
         """
         Get OS packages for Windows platform from unloaded file,
         that was created by shell command manually.
-        :param filename: path to file
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If file exists
@@ -990,7 +1016,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load OS packages for Ubuntu platform by shell command.
-        :return: result
+        :param api_data: api data set 
+        :return: result, modify api_data
         """
 
         # Define command for shell
@@ -1028,8 +1055,10 @@ class ComponentsHelper(object):
 
         except OSError as os_error:
             print_line('Shell command throw errno: {0}, strerror: {1} and '
-                       'filename: {2}.'.format(os_error.errno, os_error.strerror,
-                                               os_error.filename))
+                       'filename: {2}.'.format(
+                           os_error.errno,
+                           os_error.strerror,
+                           os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -1040,7 +1069,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load OS packages for Ubuntu platform from filem created by shell command.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1071,6 +1101,8 @@ class ComponentsHelper(object):
             except Exception as e:
                 print_line('File read exception {0}.'.format(e))
                 return False
+        
+        # Otherwise
 
         print_line('File with Ubuntu packages {0} does not exists.'.format(api_data['file']))
         return False
@@ -1079,7 +1111,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load OS packages for Fedora platform by shell command.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Define shell command
@@ -1094,8 +1127,10 @@ class ComponentsHelper(object):
 
         except OSError as os_error:
             print_line('Shell command to get Fedora packages throw errno: {0}, '
-                       'strerror: {1} and filename: {2}.'.format(os_error.errno, os_error.strerror,
-                                               os_error.filename))
+                       'strerror: {1} and filename: {2}.'.format(
+                           os_error.errno,
+                           os_error.strerror,
+                           os_error.filename))
             return False
 
         except Exception as common_exception:
@@ -1106,7 +1141,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load OS packages for Fedora platform from file, created by shell command.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1138,6 +1174,8 @@ class ComponentsHelper(object):
                 print_line('File read exception {0}.'.format(common_exception))
                 return False
 
+        # Otherwise
+
         print_line('File {0} does not exists.'.format(api_data['file']))
         return False
 
@@ -1145,7 +1183,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load OS packages for MacOS platform by shell command.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Define shell command
@@ -1188,7 +1227,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load OS packages for MacOS platform from file, created by shell command.
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If file exists
@@ -1231,7 +1271,7 @@ class ComponentsHelper(object):
         """
         Load Python PIP packages with shell command.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Define what version of Python is used
@@ -1272,8 +1312,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load Python PIP packages from file.
-        :param filename: path to file
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1307,7 +1347,7 @@ class ComponentsHelper(object):
         """
         Load NPM packages from file, defined by path.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1346,7 +1386,7 @@ class ComponentsHelper(object):
         """
         Load NPM packages from shell command.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Define path
@@ -1399,6 +1439,8 @@ class ComponentsHelper(object):
 
                 walkdict(data)
                 return True
+        
+        # Otherwise
 
         return False
 
@@ -1406,8 +1448,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load NPM packages from package.json file, defined by path.
-        :param filename: path to file
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1439,8 +1481,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load NPM packages from lock file, defined by path.
-        :param filename: path to file
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1482,8 +1524,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load Ruby gem packages from file, defined by path.
-        :param filename: path to file
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1515,7 +1557,7 @@ class ComponentsHelper(object):
 
         # Otherwise
 
-        print_line('File {0} does not exist.'.format(filename))
+        print_line('File {0} does not exist.'.format(api_data['file']))
         return False
 
     def load_gem_packages_system(self, api_data, local):
@@ -1524,7 +1566,7 @@ class ComponentsHelper(object):
         Load Ruby gem packages from global or local call of shell commend.
         :param local: local or global
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Define location: local folder or root directory
@@ -1606,8 +1648,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load packages from Gemfile. defined by path.
-        :param filename: filename
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1640,8 +1682,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load packages from Gemfile.lock defined by path.
-        :param filename: filename
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1674,8 +1716,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load packages from PHP Composer.json defined by path.
-        :param filename: filename
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1708,8 +1750,8 @@ class ComponentsHelper(object):
         # type: (dict) -> bool
         """
         Load packages from PHP Composer.lock defined by path.
-        :param filename: filename
-        :return: result
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # If exists
@@ -1737,6 +1779,62 @@ class ComponentsHelper(object):
 
         print_line('File {0} not found.'.format(api_data['file']))
         return False
+
+    def load_node_modules_components_path(self, api_data):
+        # type: (dict) -> bool
+        """
+        Load packages from package.json and package-lock.json files
+        from defined folder.
+        :param api_data: api data set
+        :return: result, modify api_data
+        """
+
+        # Get file tree in defined folder
+
+        tree = os.walk(api_data['file'])
+
+        packages = []
+        unique_packages = []
+
+        # For every file -> find package.json and package-lock.json files
+
+        for dirpath, dirnames, filenames in tree:
+            for filename in filenames:
+
+                # For package.json file
+
+                if filename == 'package.json':
+                    pdata = dict(file=dirpath + "/" + filename)
+
+                    # Get packages
+
+                    self.get_components_package_json_auto_system_path(api_data=pdata)
+
+                    for package in pdata['components']:
+                        packages.append(package)
+
+                # For package-lock.json file
+
+                elif filename == 'package-lock.json':
+                    pdata = dict(file=dirpath + "/" + filename)
+
+                    # Get packages
+
+                    self.get_components_npm_lock_auto_system_path(api_data=pdata)
+
+                    for package in pdata['components']:
+                        packages.append(package)
+
+        # Filter packages for uniqueness
+
+        for _package in packages:
+            if _package not in unique_packages:
+                unique_packages.append(_package)
+
+        # Normal output
+
+        api_data['components'] = unique_packages
+        return True        
 
     # -------------------------------------------------------------------------
     # Parsers
@@ -2044,7 +2142,7 @@ class ComponentsHelper(object):
                                 myversion = version.decode('utf-8').replace('\n', '')
 
                         except Exception as e:
-                            print_line('Get an exception {0} for npm component '__init__.py
+                            print_line('Get an exception {0} for npm component '
                                        '{1} version info.'.format(e, name))
                             myversion = 'latest'
 

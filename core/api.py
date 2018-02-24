@@ -471,6 +471,13 @@ class API(object):
                 if not project_helper.collect_data_for_project_yarn_lock_system_path(api_data=api_data):
                     return False
 
+            if api_data['target'] == Targets.NODE_MODULES and \
+                    api_data['method'] == Methods.AUTO and \
+                    api_data['format'] == Formats.SYSTEM and \
+                    api_data['file'] is not None:
+                if not project_helper.cllect_data_for_project_node_modules_system_path(api_data=api_data):
+                    return False
+
         # If there are some collected components
 
         if len(api_data['components']) > 0:
@@ -1255,6 +1262,7 @@ class Targets(object):
     PHP_COMPOSER_LOCK = 'php_composer_lock'
     POM = 'pom'
     YARN = 'yarn'
+    NODE_MODULES = 'node_modules'
 
 
 class Methods(object):

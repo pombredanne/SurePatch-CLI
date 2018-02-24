@@ -70,7 +70,7 @@ class ProjectHelper(object):
     def collect_data_for_project_os_auto_system_none(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with OS packages, collected by shell command.
+        Collect data from OS packages by shell command.
         :param api_data: api data set
         :return: result, modify api_data
         """
@@ -96,8 +96,8 @@ class ProjectHelper(object):
     def collect_data_for_project_os_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with OS packages, collected from shell command
-        and stored in file, defined in path.
+        Collect data from OS packages by shell command,
+        stored in file, defined in path.
         :param api_data: api data set
         :return: result, modify api_data
         """
@@ -125,7 +125,7 @@ class ProjectHelper(object):
     def collect_data_for_project_pip_auto_system_none(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Python PIP packages, collected from shell command.
+        Collect Python PIP packages from shell command.
         :param api_data: api data set
         :return: result, modify api_data
         """
@@ -151,8 +151,8 @@ class ProjectHelper(object):
     def collect_data_for_data_for_project_pip_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Python PIP packages, collected from shell command
-        and stored in file, defined in path.
+        Collect Python PIP packages from shell command,
+        stored in file, defined in path.
         :param api_data: api data set
         :return: result, modify api_data
         """
@@ -178,7 +178,7 @@ class ProjectHelper(object):
     def collect_data_for_project_requirements_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Python requirements.txt file, defined in path.
+        Collect Python requirements.txt file, defined in path.
         :param api_data: api data set
         :return: result, modify api_data
         """
@@ -206,7 +206,7 @@ class ProjectHelper(object):
     def collect_data_for_project_npm_auto_system_none(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with NPM packages, collected from shell command (nmp list --json).
+        Collect NPM packages, collected from shell command (nmp list --json).
         Shell command runs global from root path.
         :param api_data: api data set
         :return: result, modify api_data
@@ -233,8 +233,8 @@ class ProjectHelper(object):
     def collect_data_for_project_npm_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with NPM packages, collected from shell command (npm list --json)
-        and stored in file, defined in path.
+        Collect NPM packages from shell command (npm list --json),
+        stored in file, defined in path.
         :param api_data: api data set
         :return: result, modify api_data
         """
@@ -260,7 +260,7 @@ class ProjectHelper(object):
     def collect_data_for_project_npm_local_auto_system_none(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with NPM packages, collected from shell command (npm list --json).
+        Collect NPM packages from shell command (npm list --json).
         Shell command runs local from path, defined by --file parameter.
         :param api_data: api data set
         :return: result, modify api_data
@@ -287,9 +287,9 @@ class ProjectHelper(object):
     def collect_data_for_project_package_lock_json_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with NPM packages from package-lock.json, defined by --file parameter.
+        Collect NPM packages from package-lock.json, defined by --file parameter.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -313,9 +313,9 @@ class ProjectHelper(object):
     def collect_data_for_project_package_json_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with NPM packages from package.json, defined by --file parameter.
+        Collect NPM packages from package.json, defined by --file parameter.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -341,9 +341,9 @@ class ProjectHelper(object):
     def collect_data_for_project_gem_auto_system_none(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Ruby packages, collected from shell command.
+        Collect Ruby packages, collected from shell command.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -367,10 +367,10 @@ class ProjectHelper(object):
     def collect_data_for_project_gem_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Ruby packages, collected from shell command and
+        Collect Ruby packages from shell command and
         stored in gem list file, defined in --file parameter.
-        :param api_data:
-        :return:
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Get components
@@ -394,10 +394,10 @@ class ProjectHelper(object):
     def collect_data_for_project_gemfile_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Ruby packages, collected from Gemfile, defined
+        Collect Ruby packages, collected from Gemfile, defined
         by --file parameter.
-        :param api_data:
-        :return:
+        :param api_data: api data set
+        :return: result, modify api_data
         """
 
         # Get components
@@ -421,10 +421,10 @@ class ProjectHelper(object):
     def collect_data_for_project_gemfile_lock_auto_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Ruby packages, collected from Gemfile.lock file,
+        Collect Ruby packages, collected from Gemfile.lock file,
         defined by --file parameter.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -448,10 +448,10 @@ class ProjectHelper(object):
     def collect_data_for_project_any_auto_user_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with different packages, collected in file,
+        Collect different packages, collected in file,
         defined by path with simple multiline format: name=version…
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -475,9 +475,9 @@ class ProjectHelper(object):
     def collect_data_for_project_any_manual_user_none(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with different packages, asked in interactive mode.
+        Collect different packages, asked in interactive mode.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -501,9 +501,9 @@ class ProjectHelper(object):
     def collect_data_for_project_php_composer_json_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with PHP packages from Composer.json file.
+        Collect PHP packages from Composer.json file.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -527,9 +527,9 @@ class ProjectHelper(object):
     def collect_data_for_project_php_composer_lock_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with PHP packages from Composer.json file.
+        Collect PHP packages from Composer.json file.
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -553,9 +553,9 @@ class ProjectHelper(object):
     def collect_data_for_project_maven_pom_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with Maven pom.xml file
+        Collect packages with Maven pom.xml file
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -578,9 +578,9 @@ class ProjectHelper(object):
     def collect_data_for_project_yarn_lock_system_path(self, api_data):
         # type: (dict) -> bool
         """
-        Create project with yarn.lock file
+        Collect packages with yarn.lock file
         :param api_data: api data set
-        :return: result
+        :return: result, modify api_data
         """
 
         # Get components
@@ -600,6 +600,33 @@ class ProjectHelper(object):
         # Otherwise
 
         return False
+
+    def cllect_data_for_project_node_modules_system_path(self, api_data):
+        # type: (dict) -> bool
+        """
+        Collect data for node_modules from file
+        :param api_data: api data set
+        :return: result
+        """
+        
+        # Get components
+
+        components = api_data['components']
+        api_data['components']
+
+        if self.components_helper.get_components_node_modules(api_data=api_data):
+            for component in api_data['components']:
+                components.append(component)
+
+            # Normal utput
+
+            api_data['components'] = components
+            return True
+
+        # Otherwise
+
+        return False
+
 
     def delete_project(self, api_data):
         # type: (dict) -> bool

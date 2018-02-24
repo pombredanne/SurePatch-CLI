@@ -143,6 +143,7 @@ There are three example scripts for MacOS, Windows and Ubuntu, but you can chang
 | |php_composer_lock| Target is PHP composer.lock source |
 | |pom| Target is Maven pom.xml source |
 | |yarn| Target is yarn.lock source |
+| |node_modules| Target is node_modules folder |
 | | | |
 |--method:|<method_type>|CLI App Methods:|
 | |auto|Collect Packages automatically |
@@ -377,6 +378,12 @@ Note, that CLI App use yarn.lock system format for those data.
 ```sh
 @ surepatch --action=create_project --platform=autotest2 --project=autotest_yarn --target=yarn --method=auto --format=system --file=/home/user/yarn.lock
 ```
+### Create Project from node_modules folder, for example /home/user/node_project/node_modules
+This way, CLI APP scan folder and process package.json and package-lock.json files
+Note, than CLI App use package.json and package-lock.json system format for data
+```sh
+@ surepatch --action=create_project --platform=autotest2 --project=node_modules --target=node_modules --method=auto --format=system --file=/home/user/node_project/node_modules
+```
 ### Create Project from User defined source file, for example /home/user/user_packages.txt, where packages defined as lines in <name>=<version> format
 Now, you can create some file and fill it with different packages and versions.
 The type of package and its ownership does not matter.
@@ -499,6 +506,12 @@ And for pip3 packages:
 ### Create set from yarn.lock file, for example /home/user/yarn.lock
 ```sh
 @ surepatch --action=create_set --platform=newtest --project=autotest_set_test --set=yarn.1 --target=yarn --method=auto --format=system --file=/home/user/yarn.lock
+```
+### Create set from node_modules folder, for example /home/user/node_project/node_modules
+This way, CLI APP scan folder and process package.json and package-lock.json files
+Note, than CLI App use package.json and package-lock.json system format for data
+```sh
+@ surepatch --action=create_set --platform=newtest --project=autotest_set_test --set=node_modules.1 --target=node_modules --method=auto --format=system --file=/home/user/node_project/node_modules
 ```
 ### Create set from User packages, formatted as name=version
 ```sh

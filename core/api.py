@@ -1044,6 +1044,14 @@ class API(object):
         if api_data['logging'] is None:
             api_data['logging'] = 'off'
 
+        # For server target
+
+        if 'server' not in api_data:
+            api_data['server'] = None
+
+        if api_data['server'] is None:
+            api_data['server'] = 'prod'
+
         # Define if targets more than one
 
         targets = api_data['target'].replace('[', '').replace(']', '').replace(' ', '').split(',')
@@ -1054,7 +1062,8 @@ class API(object):
 
         api_data['target'] = targets
 
-        # Define if files more than one, if it is true - redefine files as list with length of targets
+        # Define if files more than one, if it is true -
+        # redefine files as list with length of targets
 
         files = api_data['file'].replace('[', '').replace(']', '').replace(' ', '').split(',')
 
@@ -1135,7 +1144,8 @@ class API(object):
             password=api_data['password'],
             auth_token=api_data['auth_token'],
             logo=api_data['logo'],
-            logging=api_data['logging']
+            logging=api_data['logging'],
+            server=api_data['server']
         )
 
         # open config file
@@ -1220,6 +1230,11 @@ class API(object):
                     config['logging'] = 'off'
 
                 api_data['logging'] = config['logging']
+
+                if 'server' not in config:
+                    config['server'] = 'prod'
+
+                api_data['server'] = config['server']
 
                 return True
 

@@ -79,6 +79,7 @@ class WebAPI(object):
         :param url: url to join
         :return: joined url
         """
+        print_line('Send request to "{}" server...'.format(server))
         if server == 'prod':
             return self.base_url_prod + url
         else:

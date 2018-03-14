@@ -1175,6 +1175,10 @@ class API(object):
         file_path = os.path.expanduser('~')
         full_path = os.path.join(file_path, file_name)
 
+        # Save changable flags
+
+        server = api_data['server']
+
         # If file does not exist
 
         if not os.path.isfile(full_path):
@@ -1234,7 +1238,10 @@ class API(object):
                 if 'server' not in config:
                     config['server'] = 'prod'
 
-                api_data['server'] = config['server']
+                if config['server'] != server:
+                    api_data['server'] = server
+                else:
+                    api_data['server'] = config['server']
 
                 return True
 

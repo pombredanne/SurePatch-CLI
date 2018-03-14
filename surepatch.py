@@ -144,6 +144,13 @@ def create_parser():
         help='Use log file or not (on/off)'
     )
 
+    parser.add_argument(
+        '--server',
+        type=str,
+        required=False,
+        help='Use development (beta) or production server (dev/prod)'
+    )
+
     return parser.parse_args()
 
 
@@ -178,7 +185,8 @@ def main():
         components=[],
         auth_token=arguments.auth_token,
         logo=arguments.logo,
-        logging=arguments.logging
+        logging=arguments.logging,
+        server=arguments.server
     )
 
     if arguments.logo is not None:

@@ -20,24 +20,26 @@ class WebAPI(object):
         Gecko/20100101 Firefox/45.0',
         'token': ''
     }
+
     # This route for Production server
 
-    base_url = "https://surepatch.com"
-    api_url = '/api'
-
+    base_url_prod = "https://surepatch.com"
+    
     # This route for Testing Beta server
 
-    # base_url = "https://beta.surepatch.net"
+    base_url_dev = "https://beta.surepatch.net"
+
+    api_url = '/api'
 
     # URL block
 
-    login_url = base_url + api_url + "/auth/login"
-    login_token_url = base_url + api_url + "/auth/token/login"
-    organization_url = base_url + api_url + "/organization"
-    platform_url = base_url + api_url + "/platforms"
-    project_url = base_url + api_url + "/projects"
-    issues_url = base_url + api_url + "/projects/partial"
-    components_url = base_url + api_url + "/components"
+    login_url = api_url + "/auth/login"
+    login_token_url = api_url + "/auth/token/login"
+    organization_url = api_url + "/organization"
+    platform_url = api_url + "/platforms"
+    project_url = api_url + "/projects"
+    issues_url = api_url + "/projects/partial"
+    components_url = api_url + "/components"
 
     # Payload templates block
 
@@ -69,6 +71,20 @@ class WebAPI(object):
 
     issues_payload = dict()
 
+    def get_request_url(self, server, url):
+        # type: (str, str) -> str
+        """
+        Get request url, depends from server type: dev or prod
+        :param server: dev or prod server string
+        :param url: url to join
+        :return: joined url
+        """
+        if server == 'prod':
+            return self.base_url_prod + url
+        else:
+            return self.base_url_dev + url
+
+
     def send_login_token_request(self, api_data):
         # type: (dict) -> bool
         """
@@ -86,7 +102,7 @@ class WebAPI(object):
 
         try:
             response = requests.post(
-                url=self.login_token_url,
+                url=self.get_request_url(api_data['server'], self.login_token_url),
                 headers=self.headers,
                 json=self.login_payload)
 
@@ -103,7 +119,8 @@ class WebAPI(object):
                     return True
 
                 except ValueError as json_value_exception:
-                    print_line('Response JSON parsing exception: {0}'.format(json_value_exception))
+                    print_line('Response JSON parsing exception: '
+                               '{0}'.format(json_value_exception))
                     return False
 
             # Otherwise
@@ -146,7 +163,7 @@ class WebAPI(object):
 
         try:
             response = requests.post(
-                url=self.login_url,
+                url=self.get_request_url(api_data['server'], self.login_url),
                 headers=self.headers,
                 json=self.login_payload)
 
@@ -189,7 +206,8 @@ class WebAPI(object):
                     return True
 
                 except ValueError as json_value_exception:
-                    print_line('Response JSON parsing exception: {0}'.format(json_value_exception))
+                    print_line('Response JSON parsing exception: '
+                               '{0}'.format(json_value_exception))
                     return False
 
             # Otherwise
@@ -229,7 +247,7 @@ class WebAPI(object):
 
         try:
             response = requests.get(
-                url=self.organization_url,
+                url=self.get_request_url(api_data['server'], self.organization_url),
                 headers=self.headers)
 
             if response.status_code == 200:
@@ -297,12 +315,14 @@ class WebAPI(object):
                     return True
 
                 except ValueError as json_value_exception:
-                    print_line('Response JSON parsing exception: {0}'.format(json_value_exception))
+                    print_line('Response JSON parsing exception: '
+                               '{0}'.format(json_value_exception))
                     return False
 
             # Otherwise
 
-            print_line('Get organization parameters failed. Status code: {0}'.format(response.status_code))
+            print_line('Get organization parameters failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -337,7 +357,7 @@ class WebAPI(object):
 
         try:
             response = requests.post(
-                url=self.platform_url,
+                url=self.get_request_url(api_data['server'], self.platform_url),
                 headers=self.headers,
                 json=self.platform_payload)
 
@@ -348,7 +368,8 @@ class WebAPI(object):
 
             # Otherwise
 
-            print_line('Create platform failed. Status code: {0}'.format(response.status_code))
+            print_line('Create platform failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -384,7 +405,7 @@ class WebAPI(object):
 
         try:
             response = requests.post(
-                url=self.project_url,
+                url=self.get_request_url(api_data['server'], self.project_url),
                 headers=self.headers,
                 json=self.project_payload)
 
@@ -395,7 +416,8 @@ class WebAPI(object):
 
             # Otherwise
 
-            print_line('Create project failed. Status code: {0}'.format(response.status_code))
+            print_line('Create project failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -431,7 +453,7 @@ class WebAPI(object):
 
         try:
             response = requests.post(
-                url=self.components_url,
+                url=self.get_request_url(api_data['server'], self.components_url),
                 headers=self.headers,
                 json=self.components_payload)
 
@@ -442,7 +464,8 @@ class WebAPI(object):
 
             # Otherwise
 
-            print_line('Create component set failed. Status code: {0}'.format(response.status_code))
+            print_line('Create component set failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -474,7 +497,7 @@ class WebAPI(object):
 
         try:
             response = requests.delete(
-                url=self.platform_url + '/' + str(api_data['platform_id']),
+                url=self.get_request_url(api_data['server'], self.platform_url + '/' + str(api_data['platform_id'])),
                 headers=self.headers,
                 json=self.platform_payload)
 
@@ -485,7 +508,8 @@ class WebAPI(object):
 
             # Otherwise
 
-            print_line('Delete Platform failed. Status code: {0}'.format(response.status_code))
+            print_line('Delete Platform failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -518,7 +542,7 @@ class WebAPI(object):
 
         try:
             response = requests.delete(
-                url=self.project_url + '/' + str(api_data['project_id']),
+                url=self.get_request_url(api_data['server'], self.project_url + '/' + str(api_data['project_id'])),
                 headers=self.headers,
                 json=self.project_payload)
 
@@ -529,7 +553,8 @@ class WebAPI(object):
 
             # Otherwise
 
-            print_line('Delete Project failed. Status code: {0}'.format(response.status_code))
+            print_line('Delete Project failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -570,7 +595,7 @@ class WebAPI(object):
 
         try:
             response = requests.put(
-                url=self.platform_url,
+                url=self.get_request_url(api_data['server'], self.platform_url),
                 headers=self.headers,
                 json=self.platform_payload)
 
@@ -581,7 +606,8 @@ class WebAPI(object):
 
             # Otherwise
 
-            print_line('Archive Platform failed. Status code: {0}'.format(response.status_code))
+            print_line('Archive Platform failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -621,7 +647,7 @@ class WebAPI(object):
 
         try:
             response = requests.put(
-                url=self.project_url,
+                url=self.get_request_url(api_data['server'], self.project_url),
                 headers=self.headers,
                 json=self.project_payload)
 
@@ -630,7 +656,8 @@ class WebAPI(object):
                 print_line('Project {0} was archived successfully.'.format(api_data['project']))
                 return True
 
-            print_line('Archive Project failed. Status code: {0}'.format(response.status_code))
+            print_line('Archive Project failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -671,7 +698,7 @@ class WebAPI(object):
 
         try:
             response = requests.put(
-                url=self.platform_url,
+                url=self.get_request_url(api_data['server'], self.platform_url),
                 headers=self.headers,
                 json=self.platform_payload)
 
@@ -682,7 +709,8 @@ class WebAPI(object):
 
             # Otherwise
 
-            print_line('Restore Platform failed. Status code: {0}'.format(response.status_code))
+            print_line('Restore Platform failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -723,7 +751,7 @@ class WebAPI(object):
 
         try:
             response = requests.put(
-                url=self.project_url,
+                url=self.get_request_url(api_data['server'], self.project_url),
                 headers=self.headers,
                 json=self.project_payload)
 
@@ -732,7 +760,8 @@ class WebAPI(object):
                 print_line('Project {0} was restored successfully.'.format(api_data['project']))
                 return True
 
-            print_line('Restore Project failed. Status code: {0}'.format(response.status_code))
+            print_line('Restore Project failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -765,7 +794,8 @@ class WebAPI(object):
 
         try:
             response = requests.get(
-                url=self.platform_url + '/archive/' + api_data['organization']['id'],
+                url=self.get_request_url(api_data['server'],
+                                         self.platform_url + '/archive/' + api_data['organization']['id']),
                 headers=self.headers,
                 json=self.platform_payload)
 
@@ -779,12 +809,14 @@ class WebAPI(object):
                     return True
 
                 except json.JSONDecodeError as json_decode_error:
-                    print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
+                    print_line('An exception occured with json decoder: '
+                               '{0}.'.format(json_decode_error))
                     return False
 
             # Otherwise
 
-            print_line('Archive Platform get information failed. Status code: {0}'.format(response.status_code))
+            print_line('Archive Platform get information failed. '
+                       'Status code: {0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -817,7 +849,8 @@ class WebAPI(object):
 
         try:
             response = requests.get(
-                url=self.project_url + '/archive/' + api_data['organization']['id'],
+                url=self.get_request_url(api_data['server'],
+                                         self.project_url + '/archive/' + api_data['organization']['id']),
                 headers=self.headers,
                 json=self.project_payload)
 
@@ -831,12 +864,14 @@ class WebAPI(object):
                     return True
 
                 except json.JSONDecodeError as json_decode_error:
-                    print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
+                    print_line('An exception occured with json decoder: '
+                               '{0}.'.format(json_decode_error))
                     return False
 
             # Otherwise
 
-            print_line('Archive Project get information failed. Status code: {0}'.format(response.status_code))
+            print_line('Archive Project get information failed. '
+                       'Status code: {0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:
@@ -869,7 +904,7 @@ class WebAPI(object):
 
         try:
             response = requests.post(
-                url=self.issues_url + '/' + api_data['project_url'],
+                url=self.get_request_url(api_data['server'], self.issues_url + '/' + api_data['project_url']),
                 headers=self.headers,
                 json=self.issues_payload)
 
@@ -883,12 +918,14 @@ class WebAPI(object):
                     return True
 
                 except json.JSONDecodeError as json_decode_error:
-                    print_line('An exception occured with json decoder: {0}.'.format(json_decode_error))
+                    print_line('An exception occured with json decoder: '
+                               '{0}.'.format(json_decode_error))
                     return False
 
             # Otherwise
 
-            print_line('Archive Project get information failed. Status code: {0}'.format(response.status_code))
+            print_line('Archive Project get information failed. Status code: '
+                       '{0}'.format(response.status_code))
             return False
 
         except requests.exceptions.HTTPError as http_exception:

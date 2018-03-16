@@ -259,36 +259,47 @@ class WebAPI(object):
 
                     # Complete organization structure in data set
 
-                    api_data['organization'] = dict(
-                        id=organization_data['_id'],
-                        name=organization_data['name'],
-                        token=organization_data['token'],
-                        ownerID=organization_data['owner_id']['_id'],
-                        username=organization_data['owner_id']['username'],
-                        first_name=organization_data['owner_id']['firstname'],
-                        last_name=organization_data['owner_id']['lastname'],
-                        token_expires=organization_data['owner_id']['tokenExpires'],
-                        password_expires=organization_data['owner_id']['passwordExpires'],
-                        private_key=organization_data['owner_id']['privateKey'],
-                        connection_id=organization_data['owner_id']['connectionID'],
-                        version=organization_data['owner_id']['__v'],
-                        password=organization_data['owner_id']['password'],
-                        github=organization_data['owner_id']['github'],
-                        notifications=organization_data['owner_id']['notifications'],
-                        TFA=organization_data['owner_id']['TFA'],
-                        open_key=organization_data['owner_id']['openKey'],
-                        blocked_till=organization_data['owner_id']['blockedTill'],
-                        failed_attempts=organization_data['owner_id']['failedAttempts'],
-                        updated=organization_data['owner_id']['updated'],
-                        super=organization_data['owner_id']['super'],
-                        last_passwords=organization_data['owner_id']['lastPasswords'],
-                        url=organization_data['url'],
-                        stripe_id=organization_data['stripe_id'],
-                        team_plan_id=organization_data['team_plan_id'],
-                        all_projects=organization_data['allProjects'],
-                        platforms=[])
+                    api_data['organization'] = dict()
+                    api_data['organization']['_id'] = organization_data.get('_id', '')
+                    api_data['organization']['name'] = organization_data.get('name', '')
+                    api_data['organization']['token'] = organization_data.get('token', '')
+                    api_data['organization']['url'] = organization_data.get('url', '')
+                    api_data['organization']['stripe_id'] = organization_data.get('stripe_id', '')
+                    api_data['organization']['team_plan_id'] = organization_data.get('team_plan_id', '')
+                    api_data['organization']['all_projects'] = organization_data.get('allProjects', '')
+                    
+                    owner_id = dict()
+                    owner_id = organization_data.get('owner_id', {})
+                    api_data['organization']['ownerID'] = owner_id.get('_id', '')
+                    api_data['organization']['username'] = owner_id.get('username', '')
+                    api_data['organization']['first_name'] = owner_id('firstname', '')
+                    api_data['organization']['last_name'] = owner_id.get('lastname', '')
+                    api_data['organization']['token_expires'] = owner_id.get('tokenExpires', '')
+                    api_data['organization']['password_expires'] = owner_id.get('passwordExpires', '')
+                    api_data['organization']['private_key'] = owner_id.get('privateKey', '')
+                    api_data['organization']['connection_id'] = owner_id.get('connectionID', '')
+                    api_data['organization']['version'] = owner_id.get('__v', '')
+                    api_data['organization']['password'] = owner_id.get('password', '')
+                    api_data['organization']['github'] = owner_id.get('github', '')
+                    api_data['organization']['notifications'] = owner_id.get('notifications', '')
+                    api_data['organization']['TFA'] = owner_id.get('TFA', '')
+                    api_data['organization']['open_key'] = owner_id.get('openKey', '')
+                    api_data['organization']['blocked_till'] = owner_id.get('blockedTill', '')
+                    api_data['organization']['failed_attempts'] = owner_id.get('failedAttempts', '')
+                    api_data['organization']['updated'] = owner_id.get('updated', '')
+                    api_data['organization']['super'] = owner_id.get('super', '')
+                    api_data['organization']['last_passwords'] = owner_id.get('lastPasswords', '')
 
-                    for platform_data in organization_data['platforms']:
+
+                    api_data['organization']['platforms'] = list()
+                    platforms = list()
+                    platforms = organization_data.get('platforms', [])
+
+
+                    # TODO: Complete this with validators
+
+
+                    for platform_data in platforms:
                         platform = dict(
                             id=platform_data['_id'],
                             name=platform_data['name'],
@@ -313,6 +324,62 @@ class WebAPI(object):
                                 parent_projects=project_data['parent_projects'])
                             platform['projects'].append(project)
                         api_data['organization']['platforms'].append(platform)
+
+
+                    # api_data['organization'] = dict(
+                    #     id=organization_data['_id'],
+                    #     name=organization_data['name'],
+                    #     token=organization_data['token'],
+                    #     ownerID=organization_data['owner_id']['_id'],
+                    #     username=organization_data['owner_id']['username'],
+                    #     first_name=organization_data['owner_id']['firstname'],
+                    #     last_name=organization_data['owner_id']['lastname'],
+                    #     token_expires=organization_data['owner_id']['tokenExpires'],
+                    #     password_expires=organization_data['owner_id']['passwordExpires'],
+                    #     private_key=organization_data['owner_id']['privateKey'],
+                    #     connection_id=organization_data['owner_id']['connectionID'],
+                    #     version=organization_data['owner_id']['__v'],
+                    #     password=organization_data['owner_id']['password'],
+                    #     github=organization_data['owner_id']['github'],
+                    #     notifications=organization_data['owner_id']['notifications'],
+                    #     TFA=organization_data['owner_id']['TFA'],
+                    #     open_key=organization_data['owner_id']['openKey'],
+                    #     blocked_till=organization_data['owner_id']['blockedTill'],
+                    #     failed_attempts=organization_data['owner_id']['failedAttempts'],
+                    #     updated=organization_data['owner_id']['updated'],
+                    #     super=organization_data['owner_id']['super'],
+                    #     last_passwords=organization_data['owner_id']['lastPasswords'],
+                    #     url=organization_data['url'],
+                    #     stripe_id=organization_data['stripe_id'],
+                    #     team_plan_id=organization_data['team_plan_id'],
+                    #     all_projects=organization_data['allProjects'],
+                    #     platforms=[])
+
+                    # for platform_data in organization_data['platforms']:
+                    #     platform = dict(
+                    #         id=platform_data['_id'],
+                    #         name=platform_data['name'],
+                    #         description=platform_data['description'],
+                    #         url=platform_data['url'],
+                    #         version=platform_data['__v'],
+                    #         projects=[])
+
+                    #     for project_data in platform_data['projects']:
+                    #         project = dict(
+                    #             id=project_data['_id'],
+                    #             name=project_data['name'],
+                    #             logo=project_data['logo'],
+                    #             organization_id=project_data['organization_id'],
+                    #             platform_id=project_data['platform_id'],
+                    #             current_component_set=project_data['current_component_set'],
+                    #             token=project_data['token'], url=project_data['url'],
+                    #             version=project_data['__v'], updated=project_data['updated'],
+                    #             created=project_data['created'], issues=project_data['issues'],
+                    #             component_set_history=project_data['component_set_history'],
+                    #             child_projects=project_data['child_projects'],
+                    #             parent_projects=project_data['parent_projects'])
+                    #         platform['projects'].append(project)
+                    #     api_data['organization']['platforms'].append(platform)
                     return True
 
                 except ValueError as json_value_exception:

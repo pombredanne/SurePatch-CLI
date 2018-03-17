@@ -272,7 +272,7 @@ class WebAPI(object):
                     owner_id = organization_data.get('owner_id', {})
                     api_data['organization']['ownerID'] = owner_id.get('_id', '')
                     api_data['organization']['username'] = owner_id.get('username', '')
-                    api_data['organization']['first_name'] = owner_id('firstname', '')
+                    api_data['organization']['first_name'] = owner_id.get('firstname', '')
                     api_data['organization']['last_name'] = owner_id.get('lastname', '')
                     api_data['organization']['token_expires'] = owner_id.get('tokenExpires', '')
                     api_data['organization']['password_expires'] = owner_id.get('passwordExpires', '')
@@ -290,96 +290,43 @@ class WebAPI(object):
                     api_data['organization']['super'] = owner_id.get('super', '')
                     api_data['organization']['last_passwords'] = owner_id.get('lastPasswords', '')
 
-
                     api_data['organization']['platforms'] = list()
                     platforms = list()
                     platforms = organization_data.get('platforms', [])
 
-
-                    # TODO: Complete this with validators
-
-
                     for platform_data in platforms:
-                        platform = dict(
-                            id=platform_data['_id'],
-                            name=platform_data['name'],
-                            description=platform_data['description'],
-                            url=platform_data['url'],
-                            version=platform_data['__v'],
-                            projects=[])
+                        platform = dict()
+                        platform['id'] = platform_data.get('_id', '')
+                        platform['name'] = platform_data.get('name', '')
+                        platform['description'] = platform_data.get('description', '')
+                        platform['url'] = platform_data.get('url', '')
+                        platform['version'] = platform_data.get('__v', '')
+                        platform['projects'] = list()
+
 
                         for project_data in platform_data['projects']:
-                            project = dict(
-                                id=project_data['_id'],
-                                name=project_data['name'],
-                                logo=project_data['logo'],
-                                organization_id=project_data['organization_id'],
-                                platform_id=project_data['platform_id'],
-                                current_component_set=project_data['current_component_set'],
-                                token=project_data['token'], url=project_data['url'],
-                                version=project_data['__v'], updated=project_data['updated'],
-                                created=project_data['created'], issues=project_data['issues'],
-                                component_set_history=project_data['component_set_history'],
-                                child_projects=project_data['child_projects'],
-                                parent_projects=project_data['parent_projects'])
+                            project = dict()
+                            project['id'] = project_data.get('_id', '')
+                            project['name'] = project_data.get('name', '')
+                            project['logo'] = project_data.get('logo', '')
+                            project['organization_id'] = project_data.get('organization_id', '')
+                            project['platform_id'] = project_data.get('platform_id', '')
+                            project['current_component_set'] = project_data.get('current_component_set', list())
+                            project['token'] = project_data.get('token', '')
+                            project['url'] = project_data.get('url', '')
+                            project['version'] = project_data.get('__v', '')
+                            project['updated'] = project_data.get('updated', '')
+                            project['created'] = project_data.get('created', '')
+                            project['issues'] = project_data.get('issues', list())
+                            project['component_set_history'] = project_data.get('component_set_history', list())
+                            project['child_projects'] = project_data.get('child_projects', list())
+                            project['parent_projects'] = project_data.get('parent_projects', list())
+
                             platform['projects'].append(project)
+
                         api_data['organization']['platforms'].append(platform)
 
 
-                    # api_data['organization'] = dict(
-                    #     id=organization_data['_id'],
-                    #     name=organization_data['name'],
-                    #     token=organization_data['token'],
-                    #     ownerID=organization_data['owner_id']['_id'],
-                    #     username=organization_data['owner_id']['username'],
-                    #     first_name=organization_data['owner_id']['firstname'],
-                    #     last_name=organization_data['owner_id']['lastname'],
-                    #     token_expires=organization_data['owner_id']['tokenExpires'],
-                    #     password_expires=organization_data['owner_id']['passwordExpires'],
-                    #     private_key=organization_data['owner_id']['privateKey'],
-                    #     connection_id=organization_data['owner_id']['connectionID'],
-                    #     version=organization_data['owner_id']['__v'],
-                    #     password=organization_data['owner_id']['password'],
-                    #     github=organization_data['owner_id']['github'],
-                    #     notifications=organization_data['owner_id']['notifications'],
-                    #     TFA=organization_data['owner_id']['TFA'],
-                    #     open_key=organization_data['owner_id']['openKey'],
-                    #     blocked_till=organization_data['owner_id']['blockedTill'],
-                    #     failed_attempts=organization_data['owner_id']['failedAttempts'],
-                    #     updated=organization_data['owner_id']['updated'],
-                    #     super=organization_data['owner_id']['super'],
-                    #     last_passwords=organization_data['owner_id']['lastPasswords'],
-                    #     url=organization_data['url'],
-                    #     stripe_id=organization_data['stripe_id'],
-                    #     team_plan_id=organization_data['team_plan_id'],
-                    #     all_projects=organization_data['allProjects'],
-                    #     platforms=[])
-
-                    # for platform_data in organization_data['platforms']:
-                    #     platform = dict(
-                    #         id=platform_data['_id'],
-                    #         name=platform_data['name'],
-                    #         description=platform_data['description'],
-                    #         url=platform_data['url'],
-                    #         version=platform_data['__v'],
-                    #         projects=[])
-
-                    #     for project_data in platform_data['projects']:
-                    #         project = dict(
-                    #             id=project_data['_id'],
-                    #             name=project_data['name'],
-                    #             logo=project_data['logo'],
-                    #             organization_id=project_data['organization_id'],
-                    #             platform_id=project_data['platform_id'],
-                    #             current_component_set=project_data['current_component_set'],
-                    #             token=project_data['token'], url=project_data['url'],
-                    #             version=project_data['__v'], updated=project_data['updated'],
-                    #             created=project_data['created'], issues=project_data['issues'],
-                    #             component_set_history=project_data['component_set_history'],
-                    #             child_projects=project_data['child_projects'],
-                    #             parent_projects=project_data['parent_projects'])
-                    #         platform['projects'].append(project)
-                    #     api_data['organization']['platforms'].append(platform)
                     return True
 
                 except ValueError as json_value_exception:

@@ -24,7 +24,7 @@ class WebAPI(object):
     # This route for Production server
 
     base_url_prod = "https://surepatch.com"
-    
+
     # This route for Testing Beta server
 
     base_url_dev = "https://beta.surepatch.net"
@@ -267,7 +267,7 @@ class WebAPI(object):
                     api_data['organization']['stripe_id'] = organization_data.get('stripe_id', '')
                     api_data['organization']['team_plan_id'] = organization_data.get('team_plan_id', '')
                     api_data['organization']['all_projects'] = organization_data.get('allProjects', '')
-                    
+
                     owner_id = dict()
                     owner_id = organization_data.get('owner_id', {})
                     api_data['organization']['ownerID'] = owner_id.get('_id', '')
@@ -810,7 +810,7 @@ class WebAPI(object):
         try:
             response = requests.get(
                 url=self.get_request_url(api_data['server'],
-                                         self.platform_url + '/archive/' + api_data['organization']['id']),
+                                         self.platform_url + '/archive/' + api_data['organization']['_id']),
                 headers=self.headers,
                 json=self.platform_payload)
 
